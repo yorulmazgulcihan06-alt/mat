@@ -3,72 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doğum Günün Kutlu Olsun Efe!</title>
+    <title>Kardeşim İçin...</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #ffe5ec, #ffc2d1);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #4a4a4a;
+            overflow: hidden;
+            flex-direction: column;
             text-align: center;
+            padding: 20px;
         }
 
         .container {
-            padding: 30px;
-            background: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             backdrop-filter: blur(10px);
-            max-width: 90%;
-            width: 400px;
-        }
-
-        /* Atan Kalp Animasyonu */
-        .heart {
-            font-size: 100px;
-            color: #ff477e;
-            animation: beat 1.2s infinite alternate;
-            transform-origin: center;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
-        @keyframes beat {
-            to { transform: scale(1.15); }
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border: 1px rgba(255, 255, 255, 0.1) solid;
         }
 
         h1 {
             font-size: 2.5rem;
-            color: #ff477e;
-            margin: 10px 0;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            color: #ff4a5a;
         }
 
         p {
             font-size: 1.2rem;
             line-height: 1.6;
-            color: #6c757d;
-            margin-top: 15px;
-            font-style: italic;
+            margin-bottom: 30px;
+            color: #dddddd;
+        }
+
+        .btn {
+            background: #ff4a5a;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 5px 15px rgba(255, 74, 90, 0.4);
+        }
+
+        .btn:hover {
+            background: #ff6b7b;
+            transform: translateY(-3px);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Arka plandaki kalpler için */
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: rgba(255, 74, 90, 0.6);
+            pointer-events: none;
+            animation: float Up 4s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="heart">❤️</div>
-        
-        <h1>Doğum Günün Kutlu Olsun Efe!</h1>
-        
-        <p>Olurda görüşemeyiz diye şimdiden önlem aldım 🥹🥹🥹</p>
+        <h1 id="title">Başın Sağ Olsun Kardeşim... 💔</h1>
+        <p id="message">
+            Bir kapı kapanırsa diğeri açılır derler. Bugün canın yanıyor olabilir ama unutma: <br>
+            <strong>Sen değerlisin.</strong> Kaybeden kesinlikle sen değilsin, senin gibi birini mahrum bırakanlar. Kodda hata olur, hayatta hata olur; önemli olan debug edip yola devam etmektir. 
+        </p>
+        <button class="btn" id="actionBtn" onclick="improveMood()">Moralimi Düzelt 🚀</button>
     </div>
 
+    <script>
+        // Arka planda uçuşan kırık kalpler oluşturma
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            
+            // İlk başta kırık kalpler uçsun
+            heart.innerText = '💔';
+            
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 2 + 3 + 's'; // 3-5 saniye arası
+            heart.style.fontSize = Math.random() * 20 + 15 + 'px';
+            
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        // Her 400 milisaniyede bir kalp üret
+        let heartInterval = setInterval(createHeart, 400);
+
+        // Butona basıldığında çalışacak sihirli JS fonksiyonu
+        function improveMood() {
+            // Arka planı değiştir
+            document.body.style.background = "linear-gradient(135deg, #1f4037, #99f2c8)";
+            
+            // Yazıları güncelle
+            document.getElementById('title').innerText = "Kral Geri Döndü! 👑";
+            document.getElementById('title').style.color = "#fff";
+            document.getElementById('message').innerHTML = "Giden gitmiştir, gittiği gün bitmiştir! <br> Önümüzde yazılacak çok kod, kurulacak çok server, yaşanacak efsane günler var. Toparlan, düşen tacını tak ve kaldığın yerden devam et. Krallar pes etmez!";
+            
+            // Butonu gizle veya değiştir
+            const btn = document.getElementById('actionBtn');
+            btn.style.display = "none";
+
+            // Kalpleri tam kalbe çevir ve neşeli yap
+            clearInterval(heartInterval);
+            
+            heartInterval = setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                
+                // Artık sağlam kalpler ve emojiler uçuyor
+                const emojiler = ['❤️', '🔥', '💪', '🚀', '👑'];
+                heart.innerText = emojiler[Math.floor(Math.random() * emojiler.length)];
+                
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 1.5 + 2 + 's';
+                heart.style.fontSize = Math.random() * 25 + 20 + 'px';
+                
+                document.body.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 4000);
+            }, 200);
+        }
+    </script>
 </body>
 </html>
-
