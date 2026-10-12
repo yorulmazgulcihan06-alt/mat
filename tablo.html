@@ -78,23 +78,9 @@
   <div class="kayitSayisi" id="kayitSayisi"></div>
 </div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-
 <script>
-  // ==================== FIREBASE AYARLARI ====================
-  const firebaseConfig = {
-    apiKey: "AIzaSyAUrG2O0yIyStgdgfgFpi_decEbhID4SH0",
-    authDomain: "renk-95728.firebaseapp.com",
-    databaseURL: "https://renk-95728-default-rtdb.firebaseio.com",
-    projectId: "renk-95728",
-    storageBucket: "renk-95728.firebasestorage.app",
-    messagingSenderId: "961432958227",
-    appId: "1:961432958227:web:99f0ec9a9091d58193d6e6"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+  // ==================== FIREBASE (REST API) ====================
+  const DB_URL = "https://renk-95728-default-rtdb.firebaseio.com";
   // ==========================================================
 
   const yildizEmoji = { 1: '😭', 2: '🥹', 3: '😀', 4: '😃', 5: '🤩' };
@@ -111,10 +97,11 @@
   async function yukle() {
     document.getElementById('durum').textContent = 'Yükleniyor...';
     try {
-      const snap = await db.ref('kayitlar').once('value');
-      const data = snap.val() || {};
-      const liste = Object.values(data);
+      const res = await fetch(`${DB_URL}/kayitlar.json`);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
 
+      const liste = data ? Object.values(data) : [];
       liste.sort((a, b) => new Date(b.tarih) - new Date(a.tarih));
 
       const kap = document.getElementById('liste');
@@ -155,7 +142,6 @@
     }
   }
   yukle();
-  // Otomatik yenileme YOK — sadece "🔄 Yenile" ile
 </script>
 
 </body>
