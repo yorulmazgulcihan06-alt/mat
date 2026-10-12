@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Renk Çarkı — Otomatik Çevir!</title>
+<title>Renk Çarkı — Işık Hızında!</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
 
@@ -64,6 +64,24 @@
     transform: translate(-50%,-50%);
     box-shadow: 0 0 0 6px rgba(255,255,255,0.25), 0 4px 10px rgba(0,0,0,0.5);
     z-index: 4;
+  }
+
+  /* Şimşek efekti */
+  .simsek {
+    position:absolute; inset:0;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.9), transparent 70%);
+    opacity:0;
+    pointer-events:none;
+    z-index: 6;
+  }
+  .simsek.aktif {
+    animation: simsekAnim 0.45s ease-out;
+  }
+  @keyframes simsekAnim {
+    0% { opacity:0; transform: scale(0.5); }
+    30% { opacity:1; transform: scale(1.2); }
+    100% { opacity:0; transform: scale(1.5); }
   }
 
   /* ==== BUTONLAR ==== */
@@ -131,7 +149,7 @@
     border: 2px solid rgba(255,215,0,0.6);
     border-radius: 16px;
     font-size: 14px; line-height: 1.7;
-    animation: zipla .6s ease;
+    animation: zipla .4s ease;
   }
   .mesaj .buyuk {
     font-size: 34px; font-weight: bold; color:#ffd700;
@@ -175,7 +193,7 @@
     display: flex; justify-content: center; align-items: center;
     padding: 20px;
     z-index: 100;
-    animation: karart 0.35s ease;
+    animation: karart 0.3s ease;
   }
   @keyframes karart { from { opacity: 0; } to { opacity: 1; } }
 
@@ -187,7 +205,7 @@
     max-width: 440px; width: 100%;
     text-align: center;
     box-shadow: 0 30px 80px rgba(0,0,0,0.6);
-    animation: modalGiris 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: modalGiris 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     position: relative;
   }
   @keyframes modalGiris {
@@ -212,7 +230,7 @@
     font-size: 90px;
     line-height: 1;
     margin-bottom: 10px;
-    animation: emojiZipla 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: emojiZipla 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     filter: drop-shadow(0 6px 14px rgba(0,0,0,0.15));
   }
   @keyframes emojiZipla {
@@ -231,7 +249,7 @@
     font-size: 44px;
     color: #ddd;
     transition: color .3s, transform .3s;
-    animation: yildizParla 0.5s ease forwards;
+    animation: yildizParla 0.4s ease forwards;
   }
   .yildiz.dolu { color: #ffc107; text-shadow: 0 0 16px rgba(255,193,7,0.8); }
   @keyframes yildizParla {
@@ -272,22 +290,22 @@
 <body>
 
 <div class="kart">
-  <h1>🎡 Renk Çarkı — Otomatik Çevir!</h1>
-  <p class="alt">Tek tuşla hızlıca çevir, eşitlenince kendi durur ve kaç denemede olduğunu söyler!</p>
+  <h1>🎡 Renk Çarkı — Işık Hızında!</h1>
+  <p class="alt">Bas, şak diye bitsin! ⚡ Beklemek yok, ışık hızı var!</p>
 
   <div class="cark-alani">
     <div class="ibre"></div>
     <canvas id="cark" width="320" height="320"></canvas>
     <div class="merkez"></div>
+    <div class="simsek" id="simsek"></div>
   </div>
 
   <div class="butonlar">
     <button class="anaBtn" id="cevirBtn" onclick="cevir()">🎯 TEK ÇEVİR</button>
     <button class="anaBtn otomatikBtn" id="otoBtn" onclick="otomatikBaslat()">⚡ OTOMATİK ÇEVİR</button>
-    <button class="anaBtn durdurBtn gizli" id="durBtn" onclick="otomatikDurdur()">⏹ DURDUR</button>
   </div>
 
-  <div class="hiz" id="hizYazi">Hız: Normal</div>
+  <div class="hiz" id="hizYazi">Hazır ⚡</div>
 
   <div class="puanlar">
     <div class="puan" id="p0" style="border-color:#2196F3;">
@@ -317,7 +335,7 @@
   <div class="mesaj gizli" id="mesaj"></div>
 </div>
 
-<!-- ==================== MODAL (YILDIZ EKRANI) ==================== -->
+<!-- ==================== MODAL ==================== -->
 <div id="modalArka" class="modalArka gizli">
   <div class="modalKart">
     <button class="kapatBtn" onclick="modalKapat()">✕</button>
@@ -338,13 +356,11 @@
   const puanlar = [0, 0, 0, 0];
   let denemeSayisi = 0;
   let rotation = 0;
-  let donuyor = false;
   let bitti = false;
-  let otomatikMod = false;
-  let otomatikZamanlayici = null;
 
-  const TEK_SURE = 1200;
-  const OTO_SURE = 120;
+  // IŞIK HIZI ⚡
+  const TEK_SURE = 200;   // Tek çevir: 0.2 saniye (göz kırpımı!)
+  const OTO_MAKS_TOPLAM = 1000; // Otomatik toplam süre: 1 saniye
 
   const canvas = document.getElementById('cark');
   const ctx = canvas.getContext('2d');
@@ -399,30 +415,106 @@
     ctx.restore();
   }
 
-  // ==================== ÇEVİRME ====================
-  function cevir() {
-    if (donuyor || bitti || otomatikMod) return;
-    cevirAnimasyon(TEK_SURE, false);
+  // ==================== ŞİMŞEK EFEKTİ ====================
+  function simsekCak() {
+    const s = document.getElementById('simsek');
+    s.classList.remove('aktif');
+    void s.offsetWidth; // reflow
+    s.classList.add('aktif');
   }
 
-  function cevirAnimasyon(sure, otomatik) {
-    donuyor = true;
-    if (!otomatik) document.getElementById('cevirBtn').disabled = true;
+  // ==================== TEK ÇEVİRME (IŞIK HIZI) ====================
+  function cevir() {
+    if (bitti) return;
+    simsekCak();
 
+    // Anında hesapla
     const hedefDilim = Math.floor(Math.random() * 4);
+    puanlar[hedefDilim]++;
+    denemeSayisi++;
+    guncelle();
+    vurgula(hedefDilim);
+
+    // Kısa bir animasyon (göz kırpımı)
     const hedefAci = hedefDilim * 90 + 45;
     const istenenRot = ((270 - hedefAci) % 360 + 360) % 360;
     const mevcutRot = ((rotation % 360) + 360) % 360;
     const fark = ((istenenRot - mevcutRot) % 360 + 360) % 360;
-
-    const turSayisi = otomatik ? 2 : 5;
-    const toplamDonme = 360 * turSayisi + fark;
+    const toplamDonme = 360 * 2 + fark;
     const baslangicRot = rotation;
     const bitisRot = rotation + toplamDonme;
     const baslangicZaman = performance.now();
 
     function animasyon(zaman) {
-      const gecen = Math.min(zaman - baslangicZaman, sure);
+      const gecen = Math.min(zaman - baslangicZaman, TEK_SURE);
+      const t = gecen / TEK_SURE;
+      const ease = 1 - Math.pow(1 - t, 3);
+      rotation = baslangicRot + toplamDonme * ease;
+      carkDondur(rotation);
+
+      if (t < 1) {
+        requestAnimationFrame(animasyon);
+      } else {
+        rotation = bitisRot;
+        carkDondur(rotation);
+        kontrolEt();
+      }
+    }
+    requestAnimationFrame(animasyon);
+  }
+
+  // ==================== OTOMATİK (IŞIK HIZI) ====================
+  function otomatikBaslat() {
+    if (bitti) return;
+
+    document.getElementById('cevirBtn').disabled = true;
+    document.getElementById('otoBtn').disabled = true;
+    document.getElementById('hizYazi').textContent = '⚡ IŞIK HIZI! Hesaplanıyor...';
+
+    // TÜM denemeleri ANINDA hesapla (bekleme yok!)
+    const baslangicZaman = performance.now();
+
+    // Ana döngü: eşitlenene kadar hesapla (maks 100ms)
+    while (true) {
+      const hedefDilim = Math.floor(Math.random() * 4);
+      puanlar[hedefDilim]++;
+      denemeSayisi++;
+
+      // Eşitlik kontrolü
+      if (puanlar.every(p => p === puanlar[0])) {
+        break;
+      }
+
+      // Güvenlik: çok uzun sürerse kes (teorik olarak olmaz)
+      if (denemeSayisi > 100000) break;
+
+      // Süre aşımı koruması
+      if (performance.now() - baslangicZaman > OTO_MAKS_TOPLAM) break;
+    }
+
+    // Sonucu yansıt - şimşek + hızlı dönüş
+    simsekCak();
+    guncelle();
+
+    // Kazanan renk(ler) vurgula
+    for (let i = 0; i < 4; i++) {
+      if (puanlar[i] === puanlar[0]) vurgula(i);
+    }
+
+    // Son dönüş animasyonu - kısa bir "dur" hissi
+    const sonDilim = Math.floor(Math.random() * 4);
+    const hedefAci = sonDilim * 90 + 45;
+    const istenenRot = ((270 - hedefAci) % 360 + 360) % 360;
+    const mevcutRot = ((rotation % 360) + 360) % 360;
+    const fark = ((istenenRot - mevcutRot) % 360 + 360) % 360;
+    const toplamDonme = 360 * 3 + fark;
+    const baslangicRot = rotation;
+    const bitisRot = rotation + toplamDonme;
+    const animBaslangic = performance.now();
+    const sure = 400;
+
+    function animasyon(zaman) {
+      const gecen = Math.min(zaman - animBaslangic, sure);
       const t = gecen / sure;
       const ease = 1 - Math.pow(1 - t, 3);
       rotation = baslangicRot + toplamDonme * ease;
@@ -433,57 +525,27 @@
       } else {
         rotation = bitisRot;
         carkDondur(rotation);
-        donuyor = false;
-
-        puanlar[hedefDilim]++;
-        denemeSayisi++;
-        guncelle();
-
-        const hepsiEsit = puanlar.every(p => p === puanlar[0]);
-
-        if (hepsiEsit) {
-          bitti = true;
-          otomatikMod = false;
-          temizleButonlar();
-          esitlikGoster();
-          return;
-        }
-
-        if (otomatik && otomatikMod) {
-          otomatikZamanlayici = setTimeout(() => cevirAnimasyon(OTO_SURE, true), 20);
-        } else if (!otomatik) {
-          document.getElementById('cevirBtn').disabled = false;
-        }
+        bitti = true;
+        document.getElementById('hizYazi').textContent = '✅ Bitti! Işık hızında! ⚡';
+        esitlikGoster();
       }
     }
-
     requestAnimationFrame(animasyon);
   }
 
-  // ==================== OTOMATİK MOD ====================
-  function otomatikBaslat() {
-    if (bitti || otomatikMod) return;
-
-    otomatikMod = true;
-    document.getElementById('cevirBtn').disabled = true;
-    document.getElementById('otoBtn').classList.add('gizli');
-    document.getElementById('durBtn').classList.remove('gizli');
-    document.getElementById('hizYazi').textContent = '⚡ Hız: TURBO (otomatik)';
-
-    cevirAnimasyon(OTO_SURE, true);
+  // ==================== VURGULA ====================
+  function vurgula(index) {
+    const el = document.getElementById('p' + index);
+    el.classList.add('vurgu');
+    setTimeout(() => el.classList.remove('vurgu'), 900);
   }
 
-  function otomatikDurdur() {
-    otomatikMod = false;
-    clearTimeout(otomatikZamanlayici);
-    temizleButonlar();
-    document.getElementById('hizYazi').textContent = 'Hız: Normal';
-  }
-
-  function temizleButonlar() {
-    document.getElementById('cevirBtn').disabled = false;
-    document.getElementById('otoBtn').classList.remove('gizli');
-    document.getElementById('durBtn').classList.add('gizli');
+  // ==================== KONTROL ====================
+  function kontrolEt() {
+    if (puanlar.every(p => p === puanlar[0])) {
+      bitti = true;
+      esitlikGoster();
+    }
   }
 
   // ==================== GÜNCELLE ====================
@@ -502,8 +564,6 @@
       setTimeout(() => el.classList.remove('vurgu'), 1500);
     }
 
-    document.getElementById('hizYazi').textContent = '✅ Eşitlendi!';
-
     const m = document.getElementById('mesaj');
     m.classList.remove('gizli');
     m.innerHTML = `
@@ -515,31 +575,31 @@
       <button class="kucukBtn yildizBtn" onclick="yildizGoster()">⭐ YILDIZ VER</button>
       <button class="kucukBtn" onclick="sifirla()">🔄 Baştan Başla</button>
     `;
+
+    // Otomatik yıldız göster (kısa bir gecikmeyle)
+    setTimeout(yildizGoster, 600);
   }
 
   // ==================== YILDIZ HESAPLAMA ====================
-  // Kaç denemede bittiğine göre yıldız sayısı
   function yildizHesapla(deneme) {
-    if (deneme <= 8)  return 5;  // Süper şans
-    if (deneme <= 20) return 4;  // Çok iyi
-    if (deneme <= 45) return 3;  // Normal
-    if (deneme <= 90) return 2;  // Yavaş
-    return 1;                    // Çok yavaş
+    if (deneme <= 8)  return 5;
+    if (deneme <= 20) return 4;
+    if (deneme <= 45) return 3;
+    if (deneme <= 90) return 2;
+    return 1;
   }
 
-  // ==================== MODAL GÖSTER ====================
+  // ==================== MODAL ====================
   function yildizGoster() {
     const yildizSayisi = yildizHesapla(denemeSayisi);
 
-    // Yıldız dizisi
     let yildizHTML = '';
     for (let i = 1; i <= 5; i++) {
       const dolu = i <= yildizSayisi ? 'dolu' : '';
-      yildizHTML += `<span class="yildiz ${dolu}" style="animation-delay:${i * 0.12}s">★</span>`;
+      yildizHTML += `<span class="yildiz ${dolu}" style="animation-delay:${i * 0.1}s">★</span>`;
     }
     document.getElementById('yildizSatir').innerHTML = yildizHTML;
 
-    // Yıldız sayısına göre emoji + başlık + yazı
     const tablo = {
       1: { emoji: '😭', baslik: 'Ühühühü...',   yazi: 'Bu ne böyle? Çok uzun sürdü! Bir daha dene bakalım... 😢' },
       2: { emoji: '🥹', baslik: 'Yanii...',     yazi: 'Fena değil ama daha iyisini yapabilirsin! Hadi biraz daha çabuk ol. 🙂' },
@@ -554,7 +614,6 @@
     document.getElementById('modalYazi').textContent = t.yazi;
     document.getElementById('modalDeneme').textContent = `${denemeSayisi} denemede eşitlendi`;
 
-    // Modalı aç
     document.getElementById('modalArka').classList.remove('gizli');
   }
 
@@ -562,36 +621,22 @@
     document.getElementById('modalArka').classList.add('gizli');
   }
 
-  // Arka plana tıklayınca kapat
   document.getElementById('modalArka').addEventListener('click', (e) => {
     if (e.target.id === 'modalArka') modalKapat();
   });
 
-  // ESC ile kapat
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') modalKapat();
   });
 
   // ==================== SIFIRLA ====================
   function sifirla() {
-    otomatikMod = false;
-    clearTimeout(otomatikZamanlayici);
     for (let i = 0; i < 4; i++) puanlar[i] = 0;
     denemeSayisi = 0;
     bitti = false;
-    donuyor = false;
     rotation = 0;
     guncelle();
     carkDondur(0);
     document.getElementById('mesaj').classList.add('gizli');
-    document.getElementById('hizYazi').textContent = 'Hız: Normal';
-    temizleButonlar();
-    modalKapat();
-  }
-
-  // ==================== BAŞLAT ====================
-  carkDondur(0);
-</script>
-
-</body>
-</html>
+    document.getElementById('hizYazi').textContent = 'Hazır ⚡';
+    document.getElementById('cevirBtn').d
