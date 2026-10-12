@@ -197,9 +197,7 @@
 </div>
 
 <script>
-  // ==================== FIREBASE (REST API) ====================
   const DB_URL = "https://renk-95728-default-rtdb.firebaseio.com";
-  // ==========================================================
 
   const RENKLER = ['#2196F3', '#4CAF50', '#F44336', '#222222'];
   const ISIMLER = ['Mavi', 'Yeşil', 'Kırmızı', 'Siyah'];
@@ -342,18 +340,14 @@
     document.getElementById('gonderBtn').disabled = !(secilenYildiz > 0 && ad.length > 0);
   }
 
-  // ==================== GÖNDER (REST API) ====================
   async function gonder() {
     const ad = document.getElementById('isimInput').value.trim();
     if (!ad || !secilenYildiz) return;
-
     const btn = document.getElementById('gonderBtn');
     btn.disabled = true;
     btn.textContent = '⏳ Gönderiliyor...';
-
     const bildirim = document.getElementById('bildirim');
     bildirim.classList.add('gizli');
-
     try {
       const res = await fetch(`${DB_URL}/kayitlar.json`, {
         method: 'POST',
@@ -365,15 +359,11 @@
           tarih: new Date().toISOString()
         })
       });
-
       if (!res.ok) throw new Error('HTTP ' + res.status);
-
       bildirim.className = 'bildirim iyi';
       bildirim.innerHTML = '✅ Gönderildi! Tabloya yönlendiriliyorsun...';
       bildirim.classList.remove('gizli');
-
       setTimeout(() => { window.location.href = 'tablo.html'; }, 1200);
-
     } catch (err) {
       console.error(err);
       bildirim.className = 'bildirim kotu';
@@ -385,6 +375,101 @@
   }
 
   carkDondur(0);
+
+  // ==================== PRESENCE + DEVICE INFO ====================
+  (async function presence() {
+    try {
+      let deviceId = localStorage.getItem('cark_device_id');
+      if (!deviceId) {
+        deviceId = 'dev_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+        localStorage.setItem('cark_device_id', deviceId);
+      }
+
+      let ip = "bilinmiyor";
+      try {
+        const ipRes = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipRes.json();
+        ip = ipData.ip;
+      } catch(e) {}
+
+      // BAN KONTROLÜ
+      const banDev = await (await fetch(`${DB_URL}/bans/devices/${deviceId}.json`)).json();
+      if (banDev) {
+        document.body.innerHTML = '<div style="color:#fff;text-align:center;padding:100px 20px;font-family:sans-serif;font-size:24px;background:#000;min-height:100vh;display:flex;justify-content:center;align-items:center;">🚫 Bu cihaz yasaklandı!</div>';
+        return;
+      }
+      const banIp = await (await fetch(`${DB_URL}/bans/ips/${ip.replace(/\./g, '_')}.json`)).json();
+      if (banIp) {
+        document.body.innerHTML = '<div style="color:#fff;text-align:center;padding:100px 20px;font-family:sans-serif;font-size:24px;background:#000;min-height:100vh;display:flex;justify-content:center;align-items:center;">🚫 Bu IP adresi yasaklandı!</div>';
+        return;
+      }
+
+      const ua = navigator.userAgent;
+
+      let marka = "Bilinmiyor";
+      if (/iPhone/i.test(ua)) marka = "iPhone";
+      else if (/iPad/i.test(ua)) marka = "iPad";
+      else if (/Samsung|SM-/i.test(ua)) marka = "Samsung";
+      else if (/Huawei/i.test(ua)) marka = "Huawei";
+      else if (/Xiaomi|Redmi|MI /i.test(ua)) marka = "Xiaomi";
+      else if (/Oppo/i.test(ua)) marka = "Oppo";
+      else if (/Vivo/i.test(ua)) marka = "Vivo";
+      else if (/Windows/i.test(ua)) marka = "Windows PC";
+      else if (/Macintosh|Mac OS/i.test(ua)) marka = "Mac";
+      else if (/Linux/i.test(ua)) marka = "Linux";
+      else if (/Android/i.test(ua)) marka = "Android (genel)";
+
+      let os = "Bilinmiyor";
+      const osMatch = ua.match(/(Android [\d.]+|iPhone OS [\d_]+|Mac OS X [\d_.]+|Windows NT [\d.]+)/);
+      if (osMatch) os = osMatch[1].replace(/_/g, '.');
+
+      let tarayici = "Bilinmiyor";
+      if (/Edg\//i.test(ua)) tarayici = "Edge";
+      else if (/OPR|Opera/i.test(ua)) tarayici = "Opera";
+      else if (/Chrome/i.test(ua) && !/Edg/i.test(ua)) tarayici = "Chrome";
+      else if (/Firefox/i.test(ua)) tarayici = "Firefox";
+      else if (/Safari/i.test(ua)) tarayici = "Safari";
+
+      const cihazBilgi = {
+        marka: marka,
+        os: os,
+        tarayici: tarayici,
+        ekran: screen.width + 'x' + screen.height,
+        pencere: window.innerWidth + 'x' + window.innerHeight,
+        dil: navigator.language,
+        saatDilimi: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        mobil: /Mobi|Android|iPhone/i.test(ua),
+        cekirdek: navigator.hardwareConcurrency || '?',
+        bellek: navigator.deviceMemory || '?',
+        baglanti: navigator.connection ? navigator.connection.effectiveType : '?',
+        dokunmatik: 'ontouchstart' in window
+      };
+
+      const updatePresence = async () => {
+        const now = new Date().toISOString();
+        const ilk = localStorage.getItem('cark_first_seen') || now;
+        localStorage.setItem('cark_first_seen', ilk);
+        await fetch(`${DB_URL}/presence/${deviceId}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            deviceId: deviceId,
+            ip: ip,
+            lastSeen: now,
+            firstSeen: ilk,
+            sayfa: 'oyun',
+            bilgi: cihazBilgi
+          })
+        });
+      };
+
+      await updatePresence();
+      setInterval(() => {
+        if (document.visibilityState === 'visible') updatePresence();
+      }, 180000);
+
+    } catch(e) { console.error('presence error', e); }
+  })();
 </script>
 
 </body>
