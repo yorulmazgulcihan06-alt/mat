@@ -196,10 +196,24 @@
   </div>
 </div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
 <script>
-  const GITHUB_USERNAME = "yorulmazgulcihan06-alt";
-  const GITHUB_REPO     = "mat";
-  const GITHUB_TOKEN    = "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";
+  // ==================== FIREBASE AYARLARI ====================
+  const firebaseConfig = {
+    apiKey: "AIzaSyAUrG2O0yIyStgdgfgFpi_decEbhID4SH0",
+    authDomain: "renk-95728.firebaseapp.com",
+    databaseURL: "https://renk-95728-default-rtdb.firebaseio.com",
+    projectId: "renk-95728",
+    storageBucket: "renk-95728.firebasestorage.app",
+    messagingSenderId: "961432958227",
+    appId: "1:961432958227:web:99f0ec9a9091d58193d6e6"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  // ==========================================================
 
   const RENKLER = ['#2196F3', '#4CAF50', '#F44336', '#222222'];
   const ISIMLER = ['Mavi', 'Yeşil', 'Kırmızı', 'Siyah'];
@@ -342,40 +356,36 @@
     document.getElementById('gonderBtn').disabled = !(secilenYildiz > 0 && ad.length > 0);
   }
 
+  // ==================== GÖNDER (FIREBASE) ====================
   async function gonder() {
     const ad = document.getElementById('isimInput').value.trim();
     if (!ad || !secilenYildiz) return;
+
     const btn = document.getElementById('gonderBtn');
     btn.disabled = true;
     btn.textContent = '⏳ Gönderiliyor...';
+
     const bildirim = document.getElementById('bildirim');
     bildirim.classList.add('gizli');
+
     try {
-      const res = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/issues`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `token ${GITHUB_TOKEN}`,
-          'Accept': 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          title: ad,
-          body: JSON.stringify({
-            yildiz: secilenYildiz,
-            deneme: denemeSayisi,
-            tarih: new Date().toISOString()
-          })
-        })
+      await db.ref('kayitlar').push({
+        isim: ad,
+        yildiz: secilenYildiz,
+        deneme: denemeSayisi,
+        tarih: new Date().toISOString()
       });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
+
       bildirim.className = 'bildirim iyi';
       bildirim.innerHTML = '✅ Gönderildi! Tabloya yönlendiriliyorsun...';
       bildirim.classList.remove('gizli');
+
       setTimeout(() => { window.location.href = 'tablo.html'; }, 1200);
+
     } catch (err) {
       console.error(err);
       bildirim.className = 'bildirim kotu';
-      bildirim.innerHTML = '❌ Gönderilemedi! Token veya interneti kontrol et.';
+      bildirim.innerHTML = '❌ Gönderilemedi: ' + err.message;
       bildirim.classList.remove('gizli');
       btn.disabled = false;
       btn.textContent = '📤 GÖNDER';
