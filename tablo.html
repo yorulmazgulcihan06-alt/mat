@@ -44,9 +44,7 @@
     align-items: center; gap: 12px;
     border-left: 5px solid #ffd700;
     animation: satirGir .4s ease;
-    transition: transform .2s, background .2s;
   }
-  .satir:hover { background: rgba(255,255,255,0.16); transform: translateX(4px); }
   .satir.yeni { border-left-color: #00e676; box-shadow: 0 0 20px rgba(0,230,118,0.4); }
   @keyframes satirGir {
     0% { transform: translateX(-30px); opacity: 0; }
@@ -80,10 +78,24 @@
   <div class="kayitSayisi" id="kayitSayisi"></div>
 </div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
 <script>
-  const GITHUB_USERNAME = "yorulmazgulcihan06-alt";
-  const GITHUB_REPO     = "mat";
-  const GITHUB_TOKEN    = "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";
+  // ==================== FIREBASE AYARLARI ====================
+  const firebaseConfig = {
+    apiKey: "AIzaSyAUrG2O0yIyStgdgfgFpi_decEbhID4SH0",
+    authDomain: "renk-95728.firebaseapp.com",
+    databaseURL: "https://renk-95728-default-rtdb.firebaseio.com",
+    projectId: "renk-95728",
+    storageBucket: "renk-95728.firebasestorage.app",
+    messagingSenderId: "961432958227",
+    appId: "1:961432958227:web:99f0ec9a9091d58193d6e6"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  // ==========================================================
 
   const yildizEmoji = { 1: '😭', 2: '🥹', 3: '😀', 4: '😃', 5: '🤩' };
 
@@ -99,29 +111,9 @@
   async function yukle() {
     document.getElementById('durum').textContent = 'Yükleniyor...';
     try {
-      const res = await fetch(
-        `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/issues?state=all&per_page=100`,
-        { headers: {
-            'Authorization': `token ${GITHUB_TOKEN}`,
-            'Accept': 'application/vnd.github.v3+json'
-        }}
-      );
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const issues = await res.json();
-
-      const liste = issues.filter(i => !i.pull_request).map(issue => {
-        let detay = { yildiz: 0, deneme: 0, tarih: issue.created_at };
-        try {
-          const parsed = JSON.parse(issue.body || '{}');
-          if (parsed.yildiz !== undefined) detay = parsed;
-        } catch(e) {}
-        return {
-          isim: issue.title,
-          yildiz: detay.yildiz || 0,
-          deneme: detay.deneme || 0,
-          tarih: detay.tarih || issue.created_at
-        };
-      });
+      const snap = await db.ref('kayitlar').once('value');
+      const data = snap.val() || {};
+      const liste = Object.values(data);
 
       liste.sort((a, b) => new Date(b.tarih) - new Date(a.tarih));
 
@@ -163,6 +155,7 @@
     }
   }
   yukle();
+  // Otomatik yenileme YOK — sadece "🔄 Yenile" ile
 </script>
 
 </body>
