@@ -16,7 +16,7 @@
   @keyframes bg { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
   .kart {
     background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
     border: 1px solid rgba(255,255,255,0.18);
     border-radius: 24px; padding: 28px 24px;
     max-width: 520px; width: 100%;
@@ -57,18 +57,15 @@
     color:#fff; border:none; border-radius:50px;
     padding: 14px 32px; font-size: 16px; font-weight: bold;
     cursor: pointer;
-    transition: transform .15s, box-shadow .15s, opacity .15s;
     box-shadow: 0 8px 20px rgba(221,36,118,0.5);
   }
   button.otomatikBtn { background: linear-gradient(135deg,#00c853,#00bfa5); box-shadow: 0 8px 20px rgba(0,200,83,0.5); }
   button.anaBtn:hover:not(:disabled) { transform: translateY(-3px) scale(1.05); }
-  button.anaBtn:active:not(:disabled) { transform: scale(0.94); }
   button.anaBtn:disabled { opacity:.45; cursor:not-allowed; }
   .puanlar { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0 12px; }
   .puan {
     background: rgba(255,255,255,0.1); border-radius: 14px; padding: 12px 14px;
     display:flex; align-items:center; gap:10px; border-left: 5px solid;
-    transition: transform .2s, background .2s;
   }
   .puan.vurgu { transform: scale(1.08); background: rgba(255,255,255,0.25); }
   .renk-nokta { width:16px; height:16px; border-radius:50%; }
@@ -82,26 +79,18 @@
     margin-top: 18px; padding: 22px 18px;
     background: linear-gradient(135deg, rgba(76,175,80,0.28), rgba(33,150,243,0.28));
     border: 2px solid rgba(255,215,0,0.6); border-radius: 18px;
-    animation: zipla .4s ease;
   }
-  @keyframes zipla { 0% { transform: scale(0.85); opacity:0; } 100% { transform: scale(1); opacity:1; } }
   .sonucPanel h2 { font-size: 20px; margin-bottom: 6px; }
   .denemeBuyuk {
     font-size: 44px; font-weight: bold; color:#ffd700;
     display:block; margin: 6px 0 14px;
-    text-shadow: 0 0 20px rgba(255,215,0,0.6);
   }
   .yildizSecici { display: flex; justify-content: center; gap: 8px; margin: 12px 0; }
   .yildizSecici span {
     font-size: 48px; cursor: pointer;
-    color: #555; transition: transform .15s, color .15s, text-shadow .15s;
-    user-select: none; line-height: 1;
+    color: #555; user-select: none; line-height: 1;
   }
-  .yildizSecici span:hover { transform: scale(1.2); }
-  .yildizSecici span.dolu {
-    color: #ffd700; text-shadow: 0 0 16px rgba(255,215,0,0.9);
-    transform: scale(1.1);
-  }
+  .yildizSecici span.dolu { color: #ffd700; }
   .yildizEtiket { font-size: 14px; opacity: 0.85; margin-bottom: 8px; }
   .yildizEtiket b { color: #ffd700; }
   .isimInput {
@@ -111,26 +100,21 @@
     background: rgba(255,255,255,0.1);
     color: #fff; font-size: 15px;
     text-align: center; margin: 12px auto 0; display: block;
-    outline: none; transition: border .2s, background .2s;
+    outline: none;
   }
   .isimInput::placeholder { color: rgba(255,255,255,0.5); }
-  .isimInput:focus { border-color: #ffd700; background: rgba(255,255,255,0.18); }
   .gonderBtn {
     background: linear-gradient(135deg,#ffd700,#ff8c00);
     color: #333; border: none; border-radius: 50px;
     padding: 14px 40px; font-size: 16px; font-weight: bold;
     cursor: pointer; margin-top: 14px;
-    box-shadow: 0 6px 18px rgba(255,215,0,0.5);
-    transition: transform .15s, box-shadow .15s;
   }
-  .gonderBtn:hover:not(:disabled) { transform: translateY(-2px) scale(1.04); }
   .gonderBtn:disabled { opacity: .5; cursor: not-allowed; }
   .tabloLink {
     display: inline-block; margin-top: 14px;
     color: #fff; font-size: 13px;
     text-decoration: underline; opacity: 0.85;
   }
-  .tabloLink:hover { opacity: 1; }
   .bildirim { margin-top: 12px; font-size: 14px; padding: 10px; border-radius: 12px; }
   .bildirim.iyi { background: rgba(76,175,80,0.35); }
   .bildirim.kotu { background: rgba(244,67,54,0.35); }
@@ -139,8 +123,8 @@
 <body>
 
 <div class="kart">
-  <h1>🎡 Renk Çarkı — Oyun</h1>
-  <p class="alt">Oyna, sonra kendi yıldızını ver! ⭐</p>
+  <h1>Renk Carki Oyunu</h1>
+  <p class="alt">Oyna, sonra kendi yildizini ver!</p>
 
   <div class="cark-alani">
     <div class="ibre"></div>
@@ -150,11 +134,11 @@
   </div>
 
   <div class="butonlar">
-    <button class="anaBtn" id="cevirBtn" onclick="tekCevir()">🎯 TEK ÇEVİR</button>
-    <button class="anaBtn otomatikBtn" id="otoBtn" onclick="otomatikCevir()">⚡ OTOMATİK ÇEVİR</button>
+    <button class="anaBtn" id="cevirBtn" onclick="tekCevir()">TEK CEVIR</button>
+    <button class="anaBtn otomatikBtn" id="otoBtn" onclick="otomatikCevir()">OTOMATIK CEVIR</button>
   </div>
 
-  <div class="hiz" id="hizYazi">Hazır ⚡</div>
+  <div class="hiz" id="hizYazi">Hazir</div>
 
   <div class="puanlar">
     <div class="puan" id="p0" style="border-color:#2196F3;">
@@ -163,11 +147,11 @@
     </div>
     <div class="puan" id="p1" style="border-color:#4CAF50;">
       <div class="renk-nokta" style="background:#4CAF50;"></div>
-      <span class="isim">Yeşil</span><span class="sayi" id="s1">0</span>
+      <span class="isim">Yesil</span><span class="sayi" id="s1">0</span>
     </div>
     <div class="puan" id="p2" style="border-color:#F44336;">
       <div class="renk-nokta" style="background:#F44336;"></div>
-      <span class="isim">Kırmızı</span><span class="sayi" id="s2">0</span>
+      <span class="isim">Kirmizi</span><span class="sayi" id="s2">0</span>
     </div>
     <div class="puan" id="p3" style="border-color:#888;">
       <div class="renk-nokta" style="background:#222; border:1px solid #999;"></div>
@@ -178,54 +162,54 @@
   <div class="istatistik">Toplam deneme: <b id="deneme">0</b></div>
 
   <div class="sonucPanel gizli" id="sonucPanel">
-    <h2>🎉 Tüm Puanlar Eşitlendi!</h2>
+    <h2>Tum Puanlar Esitlendi!</h2>
     <span class="denemeBuyuk" id="sonucDeneme">0</span>
-    <div class="yildizEtiket">Şimdi <b>kendi yıldızını</b> seç:</div>
+    <div class="yildizEtiket">Simdi kendi yildizini sec:</div>
     <div class="yildizSecici" id="yildizSecici">
-      <span data-y="1">★</span>
-      <span data-y="2">★</span>
-      <span data-y="3">★</span>
-      <span data-y="4">★</span>
-      <span data-y="5">★</span>
+      <span data-y="1">*</span>
+      <span data-y="2">*</span>
+      <span data-y="3">*</span>
+      <span data-y="4">*</span>
+      <span data-y="5">*</span>
     </div>
-    <div class="yildizEtiket" id="yildizYazi">Yıldız seçilmedi</div>
-    <input type="text" class="isimInput" id="isimInput" placeholder="Adın ne? (max 15)" maxlength="15">
-    <button class="gonderBtn" id="gonderBtn" onclick="gonder()" disabled>📤 GÖNDER</button>
+    <div class="yildizEtiket" id="yildizYazi">Yildiz secilmedi</div>
+    <input type="text" class="isimInput" id="isimInput" placeholder="Adin ne? (max 15)" maxlength="15">
+    <button class="gonderBtn" id="gonderBtn" onclick="gonder()" disabled>GONDER</button>
     <div class="bildirim gizli" id="bildirim"></div>
-    <a href="tablo.html" class="tabloLink">📊 Tabloyu Gör →</a>
+    <a href="tablo.html" class="tabloLink">Tabloyu Gor</a>
   </div>
 </div>
 
 <script>
-  const DB_URL = "https://renk-95728-default-rtdb.firebaseio.com";
+  var DB_URL = "https://renk-95728-default-rtdb.firebaseio.com";
 
-  const RENKLER = ['#2196F3', '#4CAF50', '#F44336', '#222222'];
-  const ISIMLER = ['Mavi', 'Yeşil', 'Kırmızı', 'Siyah'];
-  const puanlar = [0, 0, 0, 0];
-  let denemeSayisi = 0, rotation = 0, bitti = false, secilenYildiz = 0;
+  var RENKLER = ["#2196F3", "#4CAF50", "#F44336", "#222222"];
+  var ISIMLER = ["Mavi", "Yesil", "Kirmizi", "Siyah"];
+  var puanlar = [0, 0, 0, 0];
+  var denemeSayisi = 0, rotation = 0, bitti = false, secilenYildiz = 0;
 
-  const canvas = document.getElementById('cark');
-  const ctx = canvas.getContext('2d');
-  const MERKEZ = 160, YARICAP = 150;
+  var canvas = document.getElementById("cark");
+  var ctx = canvas.getContext("2d");
+  var MERKEZ = 160, YARICAP = 150;
 
   function carkCiz() {
-    for (let i = 0; i < 4; i++) {
-      const bas = i * Math.PI / 2, bit = (i + 1) * Math.PI / 2;
+    for (var i = 0; i < 4; i++) {
+      var bas = i * Math.PI / 2, bit = (i + 1) * Math.PI / 2;
       ctx.beginPath(); ctx.moveTo(MERKEZ, MERKEZ);
       ctx.arc(MERKEZ, MERKEZ, YARICAP, bas, bit); ctx.closePath();
       ctx.fillStyle = RENKLER[i]; ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 3; ctx.stroke();
-      const oa = bas + Math.PI / 4;
-      const tx = MERKEZ + Math.cos(oa) * YARICAP * 0.62;
-      const ty = MERKEZ + Math.sin(oa) * YARICAP * 0.62;
+      ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.lineWidth = 3; ctx.stroke();
+      var oa = bas + Math.PI / 4;
+      var tx = MERKEZ + Math.cos(oa) * YARICAP * 0.62;
+      var ty = MERKEZ + Math.sin(oa) * YARICAP * 0.62;
       ctx.save(); ctx.translate(tx, ty);
-      ctx.fillStyle = '#fff'; ctx.font = 'bold 16px Segoe UI, sans-serif';
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 4;
+      ctx.fillStyle = "#fff"; ctx.font = "bold 16px Segoe UI, sans-serif";
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.shadowColor = "rgba(0,0,0,0.5)"; ctx.shadowBlur = 4;
       ctx.fillText(ISIMLER[i], 0, 0); ctx.restore();
     }
     ctx.beginPath(); ctx.arc(MERKEZ, MERKEZ, YARICAP, 0, Math.PI * 2);
-    ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 7; ctx.stroke();
+    ctx.strokeStyle = "#ffd700"; ctx.lineWidth = 7; ctx.stroke();
   }
 
   function carkDondur(a) {
@@ -235,26 +219,26 @@
   }
 
   function carkaDilimGoster(d) {
-    const ha = d * 90 + 45;
-    const ir = ((270 - ha) % 360 + 360) % 360;
-    const mr = ((rotation % 360) + 360) % 360;
-    const f = ((ir - mr) % 360 + 360) % 360;
+    var ha = d * 90 + 45;
+    var ir = ((270 - ha) % 360 + 360) % 360;
+    var mr = ((rotation % 360) + 360) % 360;
+    var f = ((ir - mr) % 360 + 360) % 360;
     rotation += 360 + f; carkDondur(rotation);
   }
 
   function simsekCak() {
-    const s = document.getElementById('simsek');
-    s.classList.remove('aktif'); void s.offsetWidth; s.classList.add('aktif');
+    var s = document.getElementById("simsek");
+    s.classList.remove("aktif"); void s.offsetWidth; s.classList.add("aktif");
   }
 
   function vurgula(i) {
-    const el = document.getElementById('p' + i);
-    el.classList.add('vurgu'); setTimeout(() => el.classList.remove('vurgu'), 700);
+    var el = document.getElementById("p" + i);
+    el.classList.add("vurgu"); setTimeout(function() { el.classList.remove("vurgu"); }, 700);
   }
 
   function guncelle() {
-    for (let i = 0; i < 4; i++) document.getElementById('s' + i).textContent = puanlar[i];
-    document.getElementById('deneme').textContent = denemeSayisi;
+    for (var i = 0; i < 4; i++) document.getElementById("s" + i).textContent = puanlar[i];
+    document.getElementById("deneme").textContent = denemeSayisi;
   }
 
   function hepsiEsitMi() {
@@ -264,7 +248,7 @@
   function tekCevir() {
     if (bitti) return;
     simsekCak();
-    const h = Math.floor(Math.random() * 4);
+    var h = Math.floor(Math.random() * 4);
     puanlar[h]++; denemeSayisi++;
     guncelle(); carkaDilimGoster(h); vurgula(h);
     if (hepsiEsitMi()) bitir();
@@ -272,86 +256,89 @@
 
   function otomatikCevir() {
     if (bitti) return;
-    document.getElementById('cevirBtn').disabled = true;
-    document.getElementById('otoBtn').disabled = true;
-    document.getElementById('hizYazi').textContent = '⚡ Hesaplanıyor...';
+    document.getElementById("cevirBtn").disabled = true;
+    document.getElementById("otoBtn").disabled = true;
+    document.getElementById("hizYazi").textContent = "Hesaplaniyor...";
 
-    let guv = 0;
+    var guv = 0;
     while (true) {
       guv++;
-      let sec;
+      var sec;
       if (guv < 500000) {
-        const eb = Math.max(...puanlar);
-        const w = [eb - puanlar[0] + 1, eb - puanlar[1] + 1, eb - puanlar[2] + 1, eb - puanlar[3] + 1];
-        const top = w[0] + w[1] + w[2] + w[3];
-        let r = Math.random() * top;
-        if ((r -= w[0]) <= 0) sec = 0;
-        else if ((r -= w[1]) <= 0) sec = 1;
-        else if ((r -= w[2]) <= 0) sec = 2;
+        var eb = Math.max(puanlar[0], puanlar[1], puanlar[2], puanlar[3]);
+        var w0 = eb - puanlar[0] + 1, w1 = eb - puanlar[1] + 1, w2 = eb - puanlar[2] + 1, w3 = eb - puanlar[3] + 1;
+        var top = w0 + w1 + w2 + w3;
+        var r = Math.random() * top;
+        if ((r -= w0) <= 0) sec = 0;
+        else if ((r -= w1) <= 0) sec = 1;
+        else if ((r -= w2) <= 0) sec = 2;
         else sec = 3;
       } else {
-        const ek = Math.min(...puanlar);
-        const a = []; for (let i = 0; i < 4; i++) if (puanlar[i] === ek) a.push(i);
-        sec = a[Math.floor(Math.random() * a.length)];
+        var ek = Math.min(puanlar[0], puanlar[1], puanlar[2], puanlar[3]);
+        var adaylar = [];
+        for (var i = 0; i < 4; i++) if (puanlar[i] === ek) adaylar.push(i);
+        sec = adaylar[Math.floor(Math.random() * adaylar.length)];
       }
       puanlar[sec]++; denemeSayisi++;
       if (hepsiEsitMi()) break;
     }
 
     simsekCak(); guncelle();
-    const son = Math.floor(Math.random() * 4);
+    var son = Math.floor(Math.random() * 4);
     carkaDilimGoster(son);
-    for (let i = 0; i < 4; i++) vurgula(i);
+    for (var i = 0; i < 4; i++) vurgula(i);
     bitir();
   }
 
   function bitir() {
     bitti = true;
-    document.getElementById('hizYazi').textContent = '✅ Bitti! Şimdi yıldızını seç 👇';
-    document.getElementById('sonucDeneme').textContent = denemeSayisi + ' deneme';
-    document.getElementById('sonucPanel').classList.remove('gizli');
-    document.getElementById('sonucPanel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById("hizYazi").textContent = "Bitti! Simdi yildizini sec";
+    document.getElementById("sonucDeneme").textContent = denemeSayisi + " deneme";
+    document.getElementById("sonucPanel").classList.remove("gizli");
+    document.getElementById("sonucPanel").scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
-  const yildizYaziTablo = {
-    1: "😭 Ühühühü...",
-    2: "🥹 Yanii...",
-    3: "😀 Olurr!",
-    4: "😃 Huhuu!",
-    5: "🤩 Çokkk Teşekkürler!"
+  var yildizYaziTablo = {
+    1: "Uhuhuhu...",
+    2: "Yanii...",
+    3: "Olurr!",
+    4: "Huhuu!",
+    5: "Cok tesekkurler!"
   };
 
-  document.querySelectorAll('#yildizSecici span').forEach(el => {
-    el.addEventListener('click', () => {
-      secilenYildiz = parseInt(el.dataset.y);
-      document.querySelectorAll('#yildizSecici span').forEach((s, i) => {
-        s.classList.toggle('dolu', i < secilenYildiz);
-      });
-      document.getElementById('yildizYazi').innerHTML =
-        `<b>${secilenYildiz} yıldız</b> — ${yildizYaziTablo[secilenYildiz]}`;
+  var spans = document.querySelectorAll("#yildizSecici span");
+  for (var i = 0; i < spans.length; i++) {
+    spans[i].addEventListener("click", function() {
+      secilenYildiz = parseInt(this.dataset.y);
+      var all = document.querySelectorAll("#yildizSecici span");
+      for (var j = 0; j < all.length; j++) {
+        if (j < secilenYildiz) all[j].classList.add("dolu");
+        else all[j].classList.remove("dolu");
+      }
+      document.getElementById("yildizYazi").innerHTML = "<b>" + secilenYildiz + " yildiz</b> - " + yildizYaziTablo[secilenYildiz];
       kontrolGonder();
     });
-  });
+  }
 
-  document.getElementById('isimInput').addEventListener('input', kontrolGonder);
+  document.getElementById("isimInput").addEventListener("input", kontrolGonder);
 
   function kontrolGonder() {
-    const ad = document.getElementById('isimInput').value.trim();
-    document.getElementById('gonderBtn').disabled = !(secilenYildiz > 0 && ad.length > 0);
+    var ad = document.getElementById("isimInput").value.trim();
+    document.getElementById("gonderBtn").disabled = !(secilenYildiz > 0 && ad.length > 0);
   }
 
   async function gonder() {
-    const ad = document.getElementById('isimInput').value.trim();
+    var ad = document.getElementById("isimInput").value.trim();
     if (!ad || !secilenYildiz) return;
-    const btn = document.getElementById('gonderBtn');
+    var btn = document.getElementById("gonderBtn");
     btn.disabled = true;
-    btn.textContent = '⏳ Gönderiliyor...';
-    const bildirim = document.getElementById('bildirim');
-    bildirim.classList.add('gizli');
+    btn.textContent = "Gonderiliyor...";
+    var bildirim = document.getElementById("bildirim");
+    bildirim.classList.add("gizli");
     try {
-      const res = await fetch(`${DB_URL}/kayitlar.json`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      var res = await fetch(DB_URL + "/kayitlar.json", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           isim: ad,
           yildiz: secilenYildiz,
@@ -359,54 +346,58 @@
           tarih: new Date().toISOString()
         })
       });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      bildirim.className = 'bildirim iyi';
-      bildirim.innerHTML = '✅ Gönderildi! Tabloya yönlendiriliyorsun...';
-      bildirim.classList.remove('gizli');
-      setTimeout(() => { window.location.href = 'tablo.html'; }, 1200);
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      bildirim.className = "bildirim iyi";
+      bildirim.innerHTML = "Gonderildi! Tabloya yonlendiriliyorsun...";
+      bildirim.classList.remove("gizli");
+      setTimeout(function() { window.location.href = "tablo.html"; }, 1200);
     } catch (err) {
-      console.error(err);
-      bildirim.className = 'bildirim kotu';
-      bildirim.innerHTML = '❌ Gönderilemedi: ' + err.message;
-      bildirim.classList.remove('gizli');
+      bildirim.className = "bildirim kotu";
+      bildirim.innerHTML = "Gonderilemedi: " + err.message;
+      bildirim.classList.remove("gizli");
       btn.disabled = false;
-      btn.textContent = '📤 GÖNDER';
+      btn.textContent = "GONDER";
     }
   }
 
   carkDondur(0);
 
-  // ==================== PRESENCE + DEVICE INFO ====================
+  // ============== PRESENCE (ONLINE TAKIBI) ==============
   (async function presence() {
     try {
-      let deviceId = localStorage.getItem('cark_device_id');
+      var deviceId = localStorage.getItem("cark_device_id");
       if (!deviceId) {
-        deviceId = 'dev_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
-        localStorage.setItem('cark_device_id', deviceId);
+        deviceId = "dev_" + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+        localStorage.setItem("cark_device_id", deviceId);
       }
 
-      let ip = "bilinmiyor";
+      var ip = "bilinmiyor";
       try {
-        const ipRes = await fetch('https://api.ipify.org?format=json');
-        const ipData = await ipRes.json();
+        var ipRes = await fetch("https://api.ipify.org?format=json");
+        var ipData = await ipRes.json();
         ip = ipData.ip;
       } catch(e) {}
 
-      // BAN KONTROLÜ
-      const banDev = await (await fetch(`${DB_URL}/bans/devices/${deviceId}.json`)).json();
-      if (banDev) {
-        document.body.innerHTML = '<div style="color:#fff;text-align:center;padding:100px 20px;font-family:sans-serif;font-size:24px;background:#000;min-height:100vh;display:flex;justify-content:center;align-items:center;">🚫 Bu cihaz yasaklandı!</div>';
-        return;
-      }
-      const banIp = await (await fetch(`${DB_URL}/bans/ips/${ip.replace(/\./g, '_')}.json`)).json();
-      if (banIp) {
-        document.body.innerHTML = '<div style="color:#fff;text-align:center;padding:100px 20px;font-family:sans-serif;font-size:24px;background:#000;min-height:100vh;display:flex;justify-content:center;align-items:center;">🚫 Bu IP adresi yasaklandı!</div>';
-        return;
-      }
+      // BAN KONTROLU
+      try {
+        var banDevRes = await fetch(DB_URL + "/bans/devices/" + deviceId + ".json");
+        var banDev = await banDevRes.json();
+        if (banDev) {
+          document.body.innerHTML = '<div style="color:#fff;text-align:center;padding:100px 20px;font-family:sans-serif;font-size:24px;background:#000;min-height:100vh;display:flex;justify-content:center;align-items:center;">Bu cihaz yasaklandi!</div>';
+          return;
+        }
+        var ipKey = ip.replace(/\./g, "_");
+        var banIpRes = await fetch(DB_URL + "/bans/ips/" + ipKey + ".json");
+        var banIp = await banIpRes.json();
+        if (banIp) {
+          document.body.innerHTML = '<div style="color:#fff;text-align:center;padding:100px 20px;font-family:sans-serif;font-size:24px;background:#000;min-height:100vh;display:flex;justify-content:center;align-items:center;">Bu IP adresi yasaklandi!</div>';
+          return;
+        }
+      } catch(e) {}
 
-      const ua = navigator.userAgent;
+      var ua = navigator.userAgent;
 
-      let marka = "Bilinmiyor";
+      var marka = "Bilinmiyor";
       if (/iPhone/i.test(ua)) marka = "iPhone";
       else if (/iPad/i.test(ua)) marka = "iPad";
       else if (/Samsung|SM-/i.test(ua)) marka = "Samsung";
@@ -417,58 +408,58 @@
       else if (/Windows/i.test(ua)) marka = "Windows PC";
       else if (/Macintosh|Mac OS/i.test(ua)) marka = "Mac";
       else if (/Linux/i.test(ua)) marka = "Linux";
-      else if (/Android/i.test(ua)) marka = "Android (genel)";
+      else if (/Android/i.test(ua)) marka = "Android";
 
-      let os = "Bilinmiyor";
-      const osMatch = ua.match(/(Android [\d.]+|iPhone OS [\d_]+|Mac OS X [\d_.]+|Windows NT [\d.]+)/);
-      if (osMatch) os = osMatch[1].replace(/_/g, '.');
+      var os = "Bilinmiyor";
+      var osMatch = ua.match(/(Android [\d.]+|iPhone OS [\d_]+|Mac OS X [\d_.]+|Windows NT [\d.]+)/);
+      if (osMatch) os = osMatch[1].replace(/_/g, ".");
 
-      let tarayici = "Bilinmiyor";
+      var tarayici = "Bilinmiyor";
       if (/Edg\//i.test(ua)) tarayici = "Edge";
       else if (/OPR|Opera/i.test(ua)) tarayici = "Opera";
       else if (/Chrome/i.test(ua) && !/Edg/i.test(ua)) tarayici = "Chrome";
       else if (/Firefox/i.test(ua)) tarayici = "Firefox";
       else if (/Safari/i.test(ua)) tarayici = "Safari";
 
-      const cihazBilgi = {
+      var cihazBilgi = {
         marka: marka,
         os: os,
         tarayici: tarayici,
-        ekran: screen.width + 'x' + screen.height,
-        pencere: window.innerWidth + 'x' + window.innerHeight,
+        ekran: screen.width + "x" + screen.height,
+        pencere: window.innerWidth + "x" + window.innerHeight,
         dil: navigator.language,
         saatDilimi: Intl.DateTimeFormat().resolvedOptions().timeZone,
         mobil: /Mobi|Android|iPhone/i.test(ua),
-        cekirdek: navigator.hardwareConcurrency || '?',
-        bellek: navigator.deviceMemory || '?',
-        baglanti: navigator.connection ? navigator.connection.effectiveType : '?',
-        dokunmatik: 'ontouchstart' in window
+        cekirdek: navigator.hardwareConcurrency || "?",
+        bellek: navigator.deviceMemory || "?",
+        baglanti: navigator.connection ? navigator.connection.effectiveType : "?",
+        dokunmatik: "ontouchstart" in window
       };
 
-      const updatePresence = async () => {
-        const now = new Date().toISOString();
-        const ilk = localStorage.getItem('cark_first_seen') || now;
-        localStorage.setItem('cark_first_seen', ilk);
-        await fetch(`${DB_URL}/presence/${deviceId}.json`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+      var updatePresence = async function() {
+        var now = new Date().toISOString();
+        var ilk = localStorage.getItem("cark_first_seen") || now;
+        localStorage.setItem("cark_first_seen", ilk);
+        await fetch(DB_URL + "/presence/" + deviceId + ".json", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             deviceId: deviceId,
             ip: ip,
             lastSeen: now,
             firstSeen: ilk,
-            sayfa: 'oyun',
+            sayfa: "oyun",
             bilgi: cihazBilgi
           })
         });
       };
 
       await updatePresence();
-      setInterval(() => {
-        if (document.visibilityState === 'visible') updatePresence();
+      setInterval(function() {
+        if (document.visibilityState === "visible") updatePresence();
       }, 180000);
 
-    } catch(e) { console.error('presence error', e); }
+    } catch(e) { console.error("presence error", e); }
   })();
 </script>
 
