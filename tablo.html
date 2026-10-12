@@ -37,12 +37,10 @@
   .kucukBtn:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
   .durum { font-size: 12px; opacity: 0.7; }
   #liste { display: flex; flex-direction: column; gap: 10px; }
-
   .satir {
     background: rgba(255,255,255,0.1);
     border-radius: 14px; padding: 14px 16px;
-    display: grid;
-    grid-template-columns: 40px 1fr auto;
+    display: grid; grid-template-columns: 40px 1fr auto;
     align-items: center; gap: 12px;
     border-left: 5px solid #ffd700;
     animation: satirGir .4s ease;
@@ -50,34 +48,20 @@
   }
   .satir:hover { background: rgba(255,255,255,0.16); transform: translateX(4px); }
   .satir.yeni { border-left-color: #00e676; box-shadow: 0 0 20px rgba(0,230,118,0.4); }
-
   @keyframes satirGir {
     0% { transform: translateX(-30px); opacity: 0; }
     100% { transform: translateX(0); opacity: 1; }
   }
-
-  .sira {
-    font-size: 20px; font-weight: bold; text-align: center;
-    color: #ffd700; text-shadow: 0 0 8px rgba(255,215,0,0.5);
-  }
+  .sira { font-size: 20px; font-weight: bold; text-align: center; color: #ffd700; }
   .sira.ilk { font-size: 26px; }
   .orta { min-width: 0; }
-  .isimYazi {
-    font-size: 16px; font-weight: bold;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
+  .isimYazi { font-size: 16px; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .detay { font-size: 12px; opacity: 0.75; margin-top: 2px; }
-  .yildizlar {
-    font-size: 20px; letter-spacing: 2px;
-    text-align: right; color: #ffc107;
-    text-shadow: 0 0 8px rgba(255,193,7,0.6);
-    white-space: nowrap;
-  }
-  .bos { color: #555; text-shadow: none; }
+  .yildizlar { font-size: 20px; letter-spacing: 2px; text-align: right; color: #ffc107; white-space: nowrap; }
+  .bos { color: #555; }
   .zaman { font-size: 11px; opacity: 0.55; text-align: right; margin-top: 4px; }
   .bosEkran { text-align: center; padding: 40px 20px; opacity: 0.7; font-size: 15px; }
   .bosEkran .emoji { font-size: 50px; display: block; margin-bottom: 12px; }
-  .yukleniyor { text-align:center; padding: 40px; opacity: .7; }
   .kayitSayisi { text-align: center; font-size: 13px; opacity: 0.75; margin-top: 18px; }
   .kayitSayisi b { color: #ffd700; }
 </style>
@@ -87,28 +71,25 @@
 <div class="kart">
   <h1>📊 Renk Çarkı Tablosu</h1>
   <p class="alt">En yeni yorum en üstte! ⭐</p>
-
   <div class="ustBar">
     <button class="kucukBtn" onclick="yukle()">🔄 Yenile</button>
     <button class="kucukBtn" onclick="location.href='index.html'">🎡 Oyuna Dön</button>
     <span class="durum" id="durum">Yükleniyor...</span>
   </div>
-
-  <div id="liste"><div class="yukleniyor">⏳ Yükleniyor...</div></div>
+  <div id="liste"><div style="text-align:center;padding:40px;opacity:.7">⏳ Yükleniyor...</div></div>
   <div class="kayitSayisi" id="kayitSayisi"></div>
 </div>
 
 <script>
   const GITHUB_USERNAME = "yorulmazgulcihan06-alt";
   const GITHUB_REPO     = "mat";
-  const GITHUB_TOKEN    = "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";
+  const GITHUB_TOKEN    = "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";
 
   const yildizEmoji = { 1: '😭', 2: '🥹', 3: '😀', 4: '😃', 5: '🤩' };
 
   function zamanFormatla(iso) {
     const t = new Date(iso);
-    const simdi = new Date();
-    const fark = Math.floor((simdi - t) / 1000);
+    const fark = Math.floor((new Date() - t) / 1000);
     if (fark < 60) return 'az önce';
     if (fark < 3600) return Math.floor(fark / 60) + ' dk önce';
     if (fark < 86400) return Math.floor(fark / 3600) + ' sa önce';
@@ -116,38 +97,31 @@
   }
 
   async function yukle() {
-    const durum = document.getElementById('durum');
-    durum.textContent = 'Yükleniyor...';
-
+    document.getElementById('durum').textContent = 'Yükleniyor...';
     try {
       const res = await fetch(
         `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/issues?state=all&per_page=100`,
-        {
-          headers: {
+        { headers: {
             'Authorization': `token ${GITHUB_TOKEN}`,
             'Accept': 'application/vnd.github.v3+json'
-          }
-        }
+        }}
       );
-
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const issues = await res.json();
 
-      const liste = issues
-        .filter(i => !i.pull_request)
-        .map(issue => {
-          let detay = { yildiz: 0, deneme: 0, tarih: issue.created_at };
-          try {
-            const parsed = JSON.parse(issue.body || '{}');
-            if (parsed.yildiz !== undefined) detay = parsed;
-          } catch(e) {}
-          return {
-            isim: issue.title,
-            yildiz: detay.yildiz || 0,
-            deneme: detay.deneme || 0,
-            tarih: detay.tarih || issue.created_at
-          };
-        });
+      const liste = issues.filter(i => !i.pull_request).map(issue => {
+        let detay = { yildiz: 0, deneme: 0, tarih: issue.created_at };
+        try {
+          const parsed = JSON.parse(issue.body || '{}');
+          if (parsed.yildiz !== undefined) detay = parsed;
+        } catch(e) {}
+        return {
+          isim: issue.title,
+          yildiz: detay.yildiz || 0,
+          deneme: detay.deneme || 0,
+          tarih: detay.tarih || issue.created_at
+        };
+      });
 
       liste.sort((a, b) => new Date(b.tarih) - new Date(a.tarih));
 
@@ -155,58 +129,39 @@
       kap.innerHTML = '';
 
       if (liste.length === 0) {
-        kap.innerHTML = `
-          <div class="bosEkran">
-            <span class="emoji">🌟</span>
-            Henüz kimse yıldız vermedi!<br>İlk sen ol!
-          </div>`;
+        kap.innerHTML = `<div class="bosEkran"><span class="emoji">🌟</span>Henüz kimse yıldız vermedi!<br>İlk sen ol!</div>`;
       } else {
         liste.forEach((k, idx) => {
           const y = Math.max(1, Math.min(5, k.yildiz || 0));
           let yildizHTML = '';
           for (let i = 1; i <= 5; i++) {
-            yildizHTML += i <= y
-              ? '<span>★</span>'
-              : '<span class="bos">★</span>';
+            yildizHTML += i <= y ? '<span>★</span>' : '<span class="bos">★</span>';
           }
-
           const satir = document.createElement('div');
           satir.className = 'satir' + (idx === 0 ? ' yeni' : '');
           satir.innerHTML = `
-            <div class="sira ${idx === 0 ? 'ilk' : ''}">
-              ${idx === 0 ? '👑' : (idx + 1)}
-            </div>
+            <div class="sira ${idx === 0 ? 'ilk' : ''}">${idx === 0 ? '👑' : (idx + 1)}</div>
             <div class="orta">
               <div class="isimYazi">${k.isim}</div>
-              <div class="detay">
-                ${yildizEmoji[y] || ''} ${k.deneme} denemede eşitlendi
-              </div>
+              <div class="detay">${yildizEmoji[y] || ''} ${k.deneme} denemede eşitlendi</div>
             </div>
             <div>
               <div class="yildizlar">${yildizHTML}</div>
               <div class="zaman">${zamanFormatla(k.tarih)}</div>
-            </div>
-          `;
+            </div>`;
           kap.appendChild(satir);
         });
       }
 
       document.getElementById('kayitSayisi').innerHTML =
-        `Toplam <b>${liste.length}</b> kayıt • Son güncelleme: ${new Date().toLocaleTimeString('tr-TR')}`;
-
-      durum.textContent = '✅ Güncel';
+        `Toplam <b>${liste.length}</b> kayıt • ${new Date().toLocaleTimeString('tr-TR')}`;
+      document.getElementById('durum').textContent = '✅ Güncel';
     } catch (err) {
       console.error(err);
-      durum.textContent = '❌ Hata';
-      document.getElementById('liste').innerHTML = `
-        <div class="bosEkran">
-          <span class="emoji">😢</span>
-          Veriler yüklenemedi.<br>
-          <small>Token veya interneti kontrol et.</small>
-        </div>`;
+      document.getElementById('durum').textContent = '❌ Hata';
+      document.getElementById('liste').innerHTML = `<div class="bosEkran"><span class="emoji">😢</span>Veriler yüklenemedi.<br><small>${err.message}</small></div>`;
     }
   }
-
   yukle();
 </script>
 
