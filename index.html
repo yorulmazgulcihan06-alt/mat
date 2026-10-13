@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Renk Carki</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e3c72">
+<link rel="apple-touch-icon" href="ikon.svg">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
 body{background:linear-gradient(135deg,#1e3c72,#2a5298,#6a3093);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;color:#fff}
@@ -108,7 +111,6 @@ var c=document.getElementById("cark"),cx=c.getContext("2d"),M=150,R=145;
 function ciz(){for(var i=0;i<4;i++){var b1=i*Math.PI/2,b2=(i+1)*Math.PI/2;cx.beginPath();cx.moveTo(M,M);cx.arc(M,M,R,b1,b2);cx.closePath();cx.fillStyle=RK[i];cx.fill();cx.strokeStyle="rgba(255,255,255,.7)";cx.lineWidth=3;cx.stroke();var oa=b1+Math.PI/4,tx=M+Math.cos(oa)*R*.6,ty=M+Math.sin(oa)*R*.6;cx.save();cx.translate(tx,ty);cx.fillStyle="#fff";cx.font="bold 14px sans-serif";cx.textAlign="center";cx.textBaseline="middle";cx.fillText(IS[i],0,0);cx.restore();}cx.beginPath();cx.arc(M,M,R,0,Math.PI*2);cx.strokeStyle="gold";cx.lineWidth=6;cx.stroke();}
 function dondur(a){cx.clearRect(0,0,300,300);cx.save();cx.translate(M,M);cx.rotate(a*Math.PI/180);cx.translate(-M,-M);ciz();cx.restore();}
 function dilim(d){var ha=d*90+45,ir=((270-ha)%360+360)%360,mr=((rot%360)+360)%360,f=((ir-mr)%360+360)%360;rot+=360+f;dondur(rot);}
-function flash(){}
 function gunc(){for(var i=0;i<4;i++)document.getElementById("s"+i).textContent=puan[i];document.getElementById("deneme").textContent=deneme;}
 function esit(){return puan[0]===puan[1]&&puan[1]===puan[2]&&puan[2]===puan[3];}
 function tekCevir(){if(bitti)return;ses("tik");var h=Math.floor(Math.random()*4);puan[h]++;deneme++;gunc();dilim(h);if(esit())bitir();}
@@ -138,7 +140,8 @@ function mesajKapat(){if(aktifMesaj){var ok=JSON.parse(localStorage.getItem("oku
 setTimeout(mesajKontrol,1500);setInterval(mesajKontrol,300000);
 setTimeout(function(){var u=window.location.href;document.getElementById("qrUrl").textContent=u;document.getElementById("qrImg").src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data="+encodeURIComponent(u);document.getElementById("qrBox").classList.add("show");},300);
 dondur(0);rekorG();
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("service-worker.js").catch(function(e){});});}
+setTimeout(function(){try{var dv=localStorage.getItem("devid");if(!dv){dv="dev_"+Math.random().toString(36).substring(2)+Date.now();localStorage.setItem("devid",dv);}fetch("https://api.ipify.org?format=json").then(function(r){return r.json();}).then(function(d){var n=new Date().toISOString(),il=localStorage.getItem("ilk")||n;localStorage.setItem("ilk",il);var ua=navigator.userAgent,mk="Bilinmiyor";if(/iPhone/i.test(ua))mk="iPhone";else if(/Samsung|SM-/i.test(ua))mk="Samsung";else if(/Xiaomi|Redmi/i.test(ua))mk="Xiaomi";else if(/Windows/i.test(ua))mk="Windows";else if(/Android/i.test(ua))mk="Android";var os="?",om=ua.match(/(Android [\d.]+|iPhone OS [\d_]+)/);if(om)os=om[1].replace(/_/g,".");var br="?";if(/Chrome/i.test(ua))br="Chrome";else if(/Firefox/i.test(ua))br="Firefox";else if(/Safari/i.test(ua))br="Safari";fetch(DB+"/presence/"+dv+".json",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({deviceId:dv,ip:d.ip,lastSeen:n,firstSeen:il,bilgi:{marka:mk,os:os,tarayici:br,ekran:screen.width+"x"+screen.height,dil:navigator.language,mobil:/Mobi|Android|iPhone/i.test(ua)}})});});}catch(e){}},1000);
 </script>
 </body>
-</html>
-                                                                             </html>
+  </html>
