@@ -238,22 +238,32 @@
     if (hepsiEsitMi()) bitir();
   }
 
-  // ==================== SAF RASTGELE OTOMATIK ====================
+  // ==================== OTOMATIK: %80 SAF + %20 YONLENDIRME ====================
   function otomatikCevir() {
     if (bitti) return;
     document.getElementById("cevirBtn").disabled = true;
     document.getElementById("otoBtn").disabled = true;
     document.getElementById("hizYazi").textContent = "Hesaplaniyor...";
 
-    // SAF RASTGELE — her renk %25 sans, gercek cark gibi
+    // %80 saf rastgele + %20 en dusuge yonlendir
     var guv = 0;
     while (true) {
       guv++;
-      var sec = Math.floor(Math.random() * 4);
+      var sec;
+      if (Math.random() < 0.80) {
+        // %80 ihtimalle saf rastgele — her renk %25
+        sec = Math.floor(Math.random() * 4);
+      } else {
+        // %20 ihtimalle en dusuk olana yonlendir
+        var ek = Math.min(puanlar[0], puanlar[1], puanlar[2], puanlar[3]);
+        var adaylar = [];
+        for (var i = 0; i < 4; i++) if (puanlar[i] === ek) adaylar.push(i);
+        sec = adaylar[Math.floor(Math.random() * adaylar.length)];
+      }
       puanlar[sec]++;
       denemeSayisi++;
       if (hepsiEsitMi()) break;
-      if (guv > 100000000) break; // guvenlik: 100 milyon deneme
+      if (guv > 5000000) break;
     }
 
     simsekCak(); guncelle();
@@ -413,4 +423,4 @@
   })();
 </script>
 </body>
-     </html>
+</html>
