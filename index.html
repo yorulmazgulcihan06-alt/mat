@@ -6,37 +6,52 @@
 <title>Renk Carki</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-body { background: linear-gradient(135deg, #1e3c72, #2a5298, #6a3093); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; color: #fff; }
+body { background: linear-gradient(135deg, #1e3c72, #2a5298, #6a3093); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; color: #fff; transition: background 0.4s, color 0.4s; }
 body.light { background: linear-gradient(135deg, #e3f2fd, #bbdefb, #f8bbd0); color: #333; }
-.card { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 25px; max-width: 500px; width: 100%; text-align: center; position: relative; }
+.card { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 25px; max-width: 500px; width: 100%; text-align: center; position: relative; transition: background 0.4s; }
 body.light .card { background: rgba(255,255,255,0.8); }
-.temaBtn { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.3); color: #fff; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; cursor: pointer; }
+.temaBtn { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.3); color: #fff; border: none; border-radius: 50%; width: 42px; height: 42px; font-size: 20px; cursor: pointer; transition: transform 0.2s; z-index: 100; }
+.temaBtn:hover { transform: scale(1.1); }
 body.light .temaBtn { background: rgba(0,0,0,0.1); color: #333; }
-.wheel-area { position: relative; width: 280px; height: 280px; margin: 20px auto; }
+h1 { font-size: 22px; margin-bottom: 4px; }
+.sub { font-size: 12px; opacity: 0.75; margin-bottom: 10px; }
+.wheel-area { position: relative; width: 280px; height: 280px; margin: 15px auto; }
 .wheel-area canvas { width: 100%; height: 100%; }
-.needle { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 30px solid gold; z-index: 5; }
-.btn { padding: 12px 25px; border: none; border-radius: 50px; background: linear-gradient(135deg, #ff512f, #dd2476); color: #fff; font-size: 15px; font-weight: bold; cursor: pointer; margin: 5px; }
-.btn-green { background: linear-gradient(135deg, #00c853, #00bfa5); }
-.btn:disabled { opacity: 0.5; }
+.needle { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 30px solid gold; z-index: 5; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.5)); }
+.center-dot { position: absolute; top: 50%; left: 50%; width: 34px; height: 34px; background: #fff; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 0 5px rgba(255,255,255,0.3); z-index: 4; }
+.flash { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.95), transparent 70%); opacity: 0; pointer-events: none; z-index: 6; }
+.flash.on { animation: flashAnim 0.3s ease-out; }
+@keyframes flashAnim { 0% { opacity: 0; transform: scale(0.7); } 40% { opacity: 1; transform: scale(1.15); } 100% { opacity: 0; transform: scale(1.4); } }
+.btn { padding: 13px 28px; border: none; border-radius: 50px; background: linear-gradient(135deg, #ff512f, #dd2476); color: #fff; font-size: 15px; font-weight: bold; cursor: pointer; margin: 5px; box-shadow: 0 6px 18px rgba(221,36,118,0.5); transition: transform 0.15s; }
+.btn:active { transform: scale(0.95); }
+.btn-green { background: linear-gradient(135deg, #00c853, #00bfa5); box-shadow: 0 6px 18px rgba(0,200,83,0.5); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 15px 0; }
-.stat { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; display: flex; align-items: center; gap: 8px; border-left: 4px solid; }
+.stat { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; display: flex; align-items: center; gap: 8px; border-left: 4px solid; transition: transform 0.2s, background 0.2s; }
+.stat.active { transform: scale(1.08); background: rgba(255,255,255,0.25); }
 body.light .stat { background: rgba(0,0,0,0.05); }
+body.light .stat.active { background: rgba(0,0,0,0.15); }
 .dot { width: 14px; height: 14px; border-radius: 50%; }
 .name { font-size: 12px; }
 .num { margin-left: auto; font-size: 20px; font-weight: bold; }
 .info { font-size: 13px; margin: 8px 0; }
 .info b { color: gold; font-size: 16px; }
+body.light .info b { color: #d4a017; }
 .hidden { display: none !important; }
-.result { margin-top: 15px; padding: 15px; background: rgba(76,175,80,0.3); border: 2px solid gold; border-radius: 15px; }
+.result { margin-top: 15px; padding: 15px; background: rgba(76,175,80,0.3); border: 2px solid gold; border-radius: 15px; animation: slideIn 0.4s; }
+@keyframes slideIn { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
 .result h2 { font-size: 18px; margin-bottom: 5px; }
-.big-num { font-size: 40px; font-weight: bold; color: gold; display: block; margin: 5px 0; }
+.big-num { font-size: 42px; font-weight: bold; color: gold; display: block; margin: 5px 0; text-shadow: 0 0 15px rgba(255,215,0,0.5); }
+body.light .big-num { color: #d4a017; text-shadow: none; }
 .star-picker { display: flex; justify-content: center; gap: 5px; margin: 10px 0; }
-.star-picker span { font-size: 40px; cursor: pointer; color: #555; user-select: none; }
-.star-picker span.on { color: gold; }
-input, textarea { width: 100%; max-width: 260px; padding: 10px 15px; border-radius: 50px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: inherit; font-size: 14px; text-align: center; margin: 6px auto 0; display: block; outline: none; font-family: inherit; }
+.star-picker span { font-size: 42px; cursor: pointer; color: #555; user-select: none; transition: transform 0.15s, color 0.15s; line-height: 1; }
+.star-picker span:hover { transform: scale(1.15); }
+.star-picker span.on { color: gold; text-shadow: 0 0 18px rgba(255,215,0,0.9); transform: scale(1.1); }
+input, textarea { width: 100%; max-width: 260px; padding: 11px 15px; border-radius: 50px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: inherit; font-size: 14px; text-align: center; margin: 6px auto 0; display: block; outline: none; font-family: inherit; }
 body.light input, body.light textarea { border-color: rgba(0,0,0,0.2); background: rgba(0,0,0,0.05); }
 textarea { border-radius: 15px; resize: none; height: 50px; }
-.send-btn { background: linear-gradient(135deg, gold, orange); color: #333; border: none; border-radius: 50px; padding: 12px 35px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 12px; }
+.send-btn { background: linear-gradient(135deg, gold, orange); color: #333; border: none; border-radius: 50px; padding: 13px 38px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 12px; transition: transform 0.15s; }
+.send-btn:active { transform: scale(0.95); }
 .send-btn:disabled { opacity: 0.5; }
 .msg { margin-top: 10px; padding: 8px; border-radius: 10px; font-size: 13px; }
 .msg-ok { background: rgba(76,175,80,0.5); }
@@ -52,35 +67,37 @@ textarea { border-radius: 15px; resize: none; height: 50px; }
 <div class="card">
   <button class="temaBtn" id="temaBtn" onclick="temaDegistir()">&#127769;</button>
   <h1>Renk Carki</h1>
-  <p style="font-size: 12px; opacity: 0.7;">Oyna ve yildiz ver!</p>
+  <p class="sub">Oyna ve yildiz ver!</p>
   
   <div class="wheel-area">
     <div class="needle"></div>
     <canvas id="cark" width="300" height="300"></canvas>
+    <div class="center-dot"></div>
+    <div class="flash" id="flash"></div>
   </div>
   
-  <button class="btn" id="cevirBtn" onclick="tekCevir()">TEK CEVIR</button>
-  <button class="btn btn-green" id="otoBtn" onclick="otomatikCevir()">OTOMATIK CEVIR</button>
+  <button class="btn" id="cevirBtn" onclick="tekCevir()">&#127919; TEK CEVIR</button>
+  <button class="btn btn-green" id="otoBtn" onclick="otomatikCevir()">&#9889; OTOMATIK</button>
   
   <div class="info" id="hizYazi" style="margin-top: 10px;">Hazir</div>
   
   <div class="stats">
-    <div class="stat" style="border-color: #2196F3;">
+    <div class="stat" id="st0" style="border-color: #2196F3;">
       <div class="dot" style="background: #2196F3;"></div>
       <span class="name">Mavi</span>
       <span class="num" id="s0">0</span>
     </div>
-    <div class="stat" style="border-color: #4CAF50;">
+    <div class="stat" id="st1" style="border-color: #4CAF50;">
       <div class="dot" style="background: #4CAF50;"></div>
       <span class="name">Yesil</span>
       <span class="num" id="s1">0</span>
     </div>
-    <div class="stat" style="border-color: #F44336;">
+    <div class="stat" id="st2" style="border-color: #F44336;">
       <div class="dot" style="background: #F44336;"></div>
       <span class="name">Kirmizi</span>
       <span class="num" id="s2">0</span>
     </div>
-    <div class="stat" style="border-color: #666;">
+    <div class="stat" id="st3" style="border-color: #666;">
       <div class="dot" style="background: #222;"></div>
       <span class="name">Siyah</span>
       <span class="num" id="s3">0</span>
@@ -90,7 +107,7 @@ textarea { border-radius: 15px; resize: none; height: 50px; }
   <div class="info">Toplam deneme: <b id="deneme">0</b></div>
   
   <div class="result hidden" id="sonucPanel">
-    <h2>Tum Puanlar Esitlendi!</h2>
+    <h2>&#127881; Tum Puanlar Esitlendi!</h2>
     <span class="big-num" id="sonucDeneme">0</span>
     <div style="font-size: 13px; margin-bottom: 8px;">Simdi yildizini sec:</div>
     <div class="star-picker" id="yildizSecici">
@@ -103,13 +120,13 @@ textarea { border-radius: 15px; resize: none; height: 50px; }
     <div style="font-size: 13px; margin-bottom: 5px;" id="yildizYazi">Yildiz secilmedi</div>
     <textarea id="yorumInput" placeholder="Yorum (istege bagli)" maxlength="100"></textarea>
     <input type="text" id="isimInput" placeholder="Adin ne?" maxlength="15">
-    <button class="send-btn" id="gonderBtn" onclick="gonder()" disabled>GONDER</button>
+    <button class="send-btn" id="gonderBtn" onclick="gonder()" disabled>&#128228; GONDER</button>
     <div class="msg hidden" id="bildirim"></div>
     <a href="tablo.html" style="display: block; margin-top: 12px; color: inherit; font-size: 12px;">Tabloyu Gor &rarr;</a>
   </div>
   
   <div class="qr-box" id="qrBox">
-    <div style="font-size: 12px; opacity: 0.7; margin-bottom: 8px;">Arkadaslarina gonder:</div>
+    <div style="font-size: 12px; opacity: 0.7; margin-bottom: 8px;">&#128241; Arkadaslarina gonder:</div>
     <img id="qrImg" alt="QR">
     <div class="qr-url" id="qrUrl"></div>
   </div>
@@ -177,6 +194,19 @@ function dilim(d) {
   dondur(rot);
 }
 
+function flashCak() {
+  var f = document.getElementById("flash");
+  f.classList.remove("on");
+  void f.offsetWidth;
+  f.classList.add("on");
+}
+
+function istatistikVurgula(i) {
+  var el = document.getElementById("st" + i);
+  el.classList.add("active");
+  setTimeout(function() { el.classList.remove("active"); }, 600);
+}
+
 function guncelle() {
   for (var i = 0; i < 4; i++) document.getElementById("s" + i).textContent = puan[i];
   document.getElementById("deneme").textContent = deneme;
@@ -188,11 +218,14 @@ function hepsiEsit() {
 
 function tekCevir() {
   if (bitti) return;
+  flashCak();
+  sesCal("tik");
   var h = Math.floor(Math.random() * 4);
   puan[h] = puan[h] + 1;
   deneme = deneme + 1;
   guncelle();
   dilim(h);
+  istatistikVurgula(h);
   if (hepsiEsit()) bitir();
 }
 
@@ -220,9 +253,12 @@ function otomatikCevir() {
     if (guv > 5000000) break;
   }
   
+  flashCak();
   guncelle();
+  sesCal("ding");
   var son = Math.floor(Math.random() * 4);
   dilim(son);
+  for (var i = 0; i < 4; i++) istatistikVurgula(i);
   bitir();
 }
 
@@ -245,6 +281,8 @@ for (var i = 0; i < stars.length; i++) {
       else s[j].classList.remove("on");
     }
     document.getElementById("yildizYazi").textContent = secYildiz + " yildiz - " + yildizYazi[secYildiz];
+    sesCal("yildiz");
+    if (secYildiz === 5) konfetiBaslat();
     kontrol();
   };
 }
@@ -280,6 +318,7 @@ function gonder() {
     m.className = "msg msg-ok";
     m.textContent = "Gonderildi! Tabloya gidiliyor...";
     m.classList.remove("hidden");
+    sesCal("ding");
     setTimeout(function() { window.location.href = "tablo.html"; }, 1200);
   }).catch(function(e) {
     m.className = "msg msg-err";
@@ -299,6 +338,7 @@ function temaDegistir() {
     document.getElementById("temaBtn").innerHTML = "&#127769;";
   }
   localStorage.setItem("tema", l ? "light" : "dark");
+  sesCal("tik");
 }
 
 if (localStorage.getItem("tema") === "light") {
@@ -306,6 +346,103 @@ if (localStorage.getItem("tema") === "light") {
   document.getElementById("temaBtn").innerHTML = "&#9728;&#65039;";
 }
 
+// ============ SES ============
+var audioCtx = null;
+function sesCal(tip) {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var osc = audioCtx.createOscillator();
+    var gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    if (tip === "tik") {
+      osc.frequency.value = 800;
+      osc.type = "square";
+      gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.06);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.06);
+    } else if (tip === "ding") {
+      osc.frequency.value = 1000;
+      osc.type = "sine";
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.8);
+    } else if (tip === "yildiz") {
+      osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+      osc.frequency.linearRampToValueAtTime(1500, audioCtx.currentTime + 0.3);
+      osc.type = "triangle";
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.3);
+    }
+  } catch(e) {}
+}
+
+// ============ KONFETI ============
+var kCanvas = document.createElement("canvas");
+kCanvas.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;";
+document.body.appendChild(kCanvas);
+var kCx = kCanvas.getContext("2d");
+var konfetiler = [];
+var konfetiAktif = false;
+
+function kbAyarla() {
+  kCanvas.width = window.innerWidth;
+  kCanvas.height = window.innerHeight;
+}
+kbAyarla();
+window.addEventListener("resize", kbAyarla);
+
+function konfetiBaslat() {
+  konfetiler = [];
+  var renkler = ["#ffd700", "#ff512f", "#dd2476", "#00c853", "#2196F3", "#9c27b0", "#ff9800"];
+  for (var i = 0; i < 120; i++) {
+    konfetiler.push({
+      x: Math.random() * kCanvas.width,
+      y: -20 - Math.random() * 300,
+      w: 6 + Math.random() * 8,
+      h: 4 + Math.random() * 5,
+      vy: 2 + Math.random() * 4,
+      vx: -1 + Math.random() * 2,
+      renk: renkler[Math.floor(Math.random() * renkler.length)],
+      aci: Math.random() * Math.PI * 2,
+      dAci: -0.15 + Math.random() * 0.3
+    });
+  }
+  if (!konfetiAktif) {
+    konfetiAktif = true;
+    konfetiDongu();
+  }
+}
+
+function konfetiDongu() {
+  kCx.clearRect(0, 0, kCanvas.width, kCanvas.height);
+  var hepsiGecti = true;
+  for (var i = 0; i < konfetiler.length; i++) {
+    var k = konfetiler[i];
+    k.y += k.vy;
+    k.x += k.vx;
+    k.aci += k.dAci;
+    if (k.y < kCanvas.height + 50) hepsiGecti = false;
+    kCx.save();
+    kCx.translate(k.x, k.y);
+    kCx.rotate(k.aci);
+    kCx.fillStyle = k.renk;
+    kCx.fillRect(-k.w / 2, -k.h / 2, k.w, k.h);
+    kCx.restore();
+  }
+  if (!hepsiGecti) {
+    requestAnimationFrame(konfetiDongu);
+  } else {
+    konfetiAktif = false;
+    kCx.clearRect(0, 0, kCanvas.width, kCanvas.height);
+  }
+}
+
+// ============ QR ============
 setTimeout(function() {
   var u = window.location.href;
   document.getElementById("qrUrl").textContent = u;
@@ -315,6 +452,7 @@ setTimeout(function() {
 
 dondur(0);
 
+// ============ PRESENCE ============
 setTimeout(function() {
   try {
     var devId = localStorage.getItem("devid");
@@ -348,7 +486,9 @@ setTimeout(function() {
         else if (/Firefox/i.test(ua)) br = "Firefox";
         else if (/Safari/i.test(ua)) br = "Safari";
         var bilgi = {
-          marka: marka, os: os, tarayici: br,
+          marka: marka,
+          os: os,
+          tarayici: br,
           ekran: screen.width + "x" + screen.height,
           dil: navigator.language,
           saatDilimi: "bilinmiyor",
@@ -356,17 +496,4 @@ setTimeout(function() {
           cekirdek: navigator.hardwareConcurrency || "?",
           dokunmatik: "ontouchstart" in window
         };
-        fetch(DB + "/presence/" + devId + ".json", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            deviceId: devId, ip: d.ip, lastSeen: now, firstSeen: ilk, bilgi: bilgi
-          })
-        });
-      });
-  } catch(e) {}
-}, 1000);
-</script>
-
-</body>
-</html>
+        fetch(DB + "/presence/" + devId + ".jso
