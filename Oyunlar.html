@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Matematik Oyunlari</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
+body{background:linear-gradient(135deg,#1e3c72,#2a5298,#6a3093);min-height:100vh;padding:25px 15px;color:#fff}
+.kart{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:25px 20px;max-width:600px;margin:0 auto;position:relative}
+.geriBtn{position:absolute;top:14px;left:14px;background:rgba(0,0,0,.3);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer;text-decoration:none;display:flex;align-items:center;justify-content:center}
+h1{font-size:22px;text-align:center;margin-bottom:6px}
+.alt{font-size:13px;text-align:center;opacity:.75;margin-bottom:20px}
+.liste{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.oyun{background:rgba(255,255,255,.1);border-radius:14px;padding:15px 12px;text-decoration:none;color:#fff;text-align:center;border-left:4px solid;transition:transform .15s,background .15s;cursor:pointer}
+.oyun:hover{transform:translateY(-3px);background:rgba(255,255,255,.2)}
+.oyun .emoji{font-size:32px;display:block;margin-bottom:6px}
+.oyun .isim{font-size:13px;font-weight:bold}
+.oyun .aciklama{font-size:10px;opacity:.7;margin-top:3px}
+@media (max-width:400px){.liste{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="kart">
+<a href="index.html" class="geriBtn">&#8592;</a>
+<h1>&#128208; Matematik Oyunlari</h1>
+<p class="alt">Bir oyun sec ve ogrenmeye basla!</p>
+<div class="liste">
+<a href="mat1.html" class="oyun" style="border-color:#2196F3"><span class="emoji">&#10133;</span><span class="isim">Toplama Yarisi</span><span class="aciklama">Hizli toplama</span></a>
+<a href="mat2.html" class="oyun" style="border-color:#4CAF50"><span class="emoji">&#10134;</span><span class="isim">Cikarma Ustasi</span><span class="aciklama">Cikarma islemleri</span></a>
+<a href="mat3.html" class="oyun" style="border-color:#F44336"><span class="emoji">&#10006;</span><span class="isim">Carpim Tablosu</span><span class="aciklama">Carpma ogren</span></a>
+<a href="mat4.html" class="oyun" style="border-color:#FF9800"><span class="emoji">&#10135;</span><span class="isim">Bolme Ustasi</span><span class="aciklama">Bolme islemleri</span></a>
+<a href="mat5.html" class="oyun" style="border-color:#9C27B0"><span class="emoji">&#127829;</span><span class="isim">Kesirler</span><span class="aciklama">Kesir karsilastir</span></a>
+<a href="mat6.html" class="oyun" style="border-color:#00BCD4"><span class="emoji">&#128290;</span><span class="isim">Sayi Siralama</span><span class="aciklama">Kucukten buyuge</span></a>
+<a href="mat7.html" class="oyun" style="border-color:#795548"><span class="emoji">&#9878;</span><span class="isim">Buyuk/Kucuk</span><span class="aciklama">Karsilastir</span></a>
+<a href="mat8.html" class="oyun" style="border-color:#E91E63"><span class="emoji">&#128202;</span><span class="isim">Ondalik Sayilar</span><span class="aciklama">Ondalik islemler</span></a>
+<a href="mat9.html" class="oyun" style="border-color:#607D8B"><span class="emoji">&#129513;</span><span class="isim">Problem Cozme</span><span class="aciklama">Kisa problemler</span></a>
+<a href="mat10.html" class="oyun" style="border-color:#3F51B5"><span class="emoji">&#128208;</span><span class="isim">Geometri</span><span class="aciklama">Sekil tanima</span></a>
+</div>
+</div>
+</body>
+</html>
