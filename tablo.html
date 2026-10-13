@@ -2,359 +2,305 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Renk Çarkı — Tablo</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Renk Carki Tablosu</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
-  body {
-    min-height:100vh;
-    background: linear-gradient(135deg,#1e3c72,#2a5298,#6a3093);
-    background-size:400% 400%; animation: bg 15s ease infinite;
-    padding: 30px 15px; color:#fff;
-  }
-  @keyframes bg { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-  .kart {
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.18);
-    border-radius: 24px; padding: 28px 22px;
-    max-width: 620px; width: 100%; margin: 0 auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    position: relative;
-  }
-  .adminBtn {
-    position: absolute; top: 14px; right: 14px;
-    background: #000; color: #fff;
-    border: 1px solid #333; border-radius: 20px;
-    padding: 7px 16px; font-size: 11px; font-weight: bold;
-    cursor: pointer; letter-spacing: 1.5px;
-  }
-  h1 { font-size: 22px; text-align: center; margin-bottom: 6px; }
-  .alt { font-size: 13px; text-align: center; opacity: 0.75; margin-bottom: 20px; }
-  .ustBar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
-  .kucukBtn {
-    background: rgba(255,255,255,0.15); color: #fff;
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 50px; padding: 9px 20px;
-    font-size: 13px; font-weight: bold; cursor: pointer;
-  }
-  .durum { font-size: 12px; opacity: 0.7; }
-  #liste { display: flex; flex-direction: column; gap: 10px; }
-  .satir {
-    background: rgba(255,255,255,0.1); border-radius: 14px; padding: 14px 16px;
-    display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 12px;
-    border-left: 5px solid #ffd700;
-  }
-  .satir.yeni { border-left-color: #00e676; box-shadow: 0 0 20px rgba(0,230,118,0.4); }
-  .sira { font-size: 20px; font-weight: bold; text-align: center; color: #ffd700; }
-  .sira.ilk { font-size: 26px; }
-  .orta { min-width: 0; }
-  .isimYazi { font-size: 16px; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .detay { font-size: 12px; opacity: 0.75; margin-top: 2px; }
-  .yildizlar { font-size: 20px; letter-spacing: 2px; text-align: right; color: #ffc107; white-space: nowrap; }
-  .bos { color: #555; }
-  .zaman { font-size: 11px; opacity: 0.55; text-align: right; margin-top: 4px; }
-  .bosEkran { text-align: center; padding: 40px 20px; opacity: 0.7; font-size: 15px; }
-  .kayitSayisi { text-align: center; font-size: 13px; opacity: 0.75; margin-top: 18px; }
-  .kayitSayisi b { color: #ffd700; }
-
-  .modalArka { position: fixed; inset: 0; background: #000; z-index: 200; display: flex; justify-content: center; align-items: flex-start; overflow-y: auto; }
-  .modalKart { background: #0a0a0a; color: #fff; border: 1px solid #1a1a1a; width: 100%; max-width: 700px; min-height: 100vh; padding: 20px 16px; position: relative; }
-  .modalKapat { position: absolute; top: 16px; right: 16px; background: #1a1a1a; border: 1px solid #333; color: #fff; width: 34px; height: 34px; border-radius: 50%; font-size: 16px; cursor: pointer; }
-  .sifreWrap { max-width: 340px; margin: 80px auto; text-align: center; }
-  .sifreWrap h2 { font-size: 20px; margin-bottom: 24px; color: #00e676; }
-  .sifreInput { width: 100%; padding: 14px 18px; border-radius: 10px; border: 2px solid #00e676; background: #000; color: #00e676; font-size: 16px; text-align: center; outline: none; letter-spacing: 3px; }
-  .girisBtn { width: 100%; padding: 14px; border-radius: 10px; background: #00e676; border: none; color: #000; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 12px; }
-  .hataYazi { color: #f44336; margin-top: 10px; font-size: 13px; }
-  .panelBaslik { display: flex; align-items: center; gap: 10px; padding: 8px 0 16px; border-bottom: 1px solid #1a1a1a; margin-bottom: 16px; }
-  .panelBaslik h2 { color: #00e676; font-size: 16px; }
-  .panelBaslik .sayac { margin-left: auto; font-size: 12px; opacity: 0.6; }
-  .tabs { display: flex; gap: 4px; border-bottom: 1px solid #1a1a1a; margin-bottom: 16px; overflow-x: auto; }
-  .tabBtn { background: transparent; border: none; color: #666; font-size: 12px; font-weight: bold; padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
-  .tabBtn.aktif { color: #00e676; border-bottom-color: #00e676; }
-  .telKart { background: #111; border: 1px solid #1a1a1a; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; border-left: 4px solid #333; }
-  .telKart.online { border-left-color: #00e676; }
-  .telKart.banli { border-left-color: #f44336; opacity: 0.5; }
-  .telUst { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
-  .telIsim { font-weight: bold; color: #fff; font-size: 14px; }
-  .telId { font-size: 10px; color: #666; }
-  .telDurum { margin-left: auto; font-size: 10px; font-weight: bold; padding: 3px 10px; border-radius: 10px; }
-  .telDurum.online { background: #00e676; color: #000; }
-  .telDurum.offline { background: #333; color: #888; }
-  .telDurum.banli { background: #f44336; color: #fff; }
-  .telBilgiSatir { display: flex; flex-wrap: wrap; gap: 6px; font-size: 11px; color: #888; margin: 6px 0; }
-  .telBilgiSatir span { background: #1a1a1a; padding: 3px 8px; border-radius: 4px; }
-  .telButonlar { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-  .mBtn { background: #1a1a1a; color: #aaa; border: 1px solid #333; border-radius: 6px; padding: 6px 12px; font-size: 10px; font-weight: bold; cursor: pointer; }
-  .mBtn.ban { color: #ff6b6b; border-color: #5a1a1a; }
-  .mBtn.unban { color: #00e676; border-color: #1a5a1a; }
-  .mBtn.incele { color: #4fc3f7; border-color: #1a3a5a; }
-  .bilgiKart { background: #111; border: 1px solid #1a1a1a; border-radius: 10px; padding: 16px; }
-  .bilgiBaslik { font-size: 14px; color: #00e676; font-weight: bold; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #1a1a1a; }
-  .bilgiSatir { display: flex; justify-content: space-between; padding: 8px 0; font-size: 12px; border-bottom: 1px solid #151515; }
-  .bilgiSatir .anahtar { color: #666; }
-  .bilgiSatir .deger { color: #fff; text-align: right; word-break: break-all; max-width: 60%; }
-  .bosListe { text-align: center; padding: 40px 20px; color: #333; font-size: 12px; }
-  .yenileBtn { width: 100%; margin-top: 16px; background: #00e676; color: #000; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; }
-  .sonGuncelleme { font-size: 10px; color: #333; text-align: center; margin-top: 12px; }
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
+body{background:linear-gradient(135deg,#1e3c72,#2a5298,#6a3093);min-height:100vh;padding:25px 15px;color:#fff}
+.kart{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:25px 20px;max-width:620px;margin:0 auto;position:relative}
+.adminBtn{position:absolute;top:14px;right:14px;background:#000;color:#fff;border:1px solid #333;border-radius:20px;padding:7px 16px;font-size:11px;font-weight:bold;cursor:pointer;letter-spacing:1px}
+h1{font-size:22px;text-align:center;margin-bottom:6px}
+.alt{font-size:13px;text-align:center;opacity:.75;margin-bottom:18px}
+.ustBar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.kucukBtn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:50px;padding:9px 20px;font-size:13px;font-weight:bold;cursor:pointer}
+.durum{font-size:12px;opacity:.7}
+.skorlar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px}
+.skorKart{background:rgba(255,215,0,.1);border:2px solid rgba(255,215,0,.3);border-radius:14px;padding:12px 8px;text-align:center}
+.skorKart.altin{background:rgba(255,215,0,.25);border-color:gold;box-shadow:0 0 20px rgba(255,215,0,.4)}
+.skorKart.gumus{background:rgba(192,192,192,.15);border-color:#c0c0c0}
+.skorKart.bronz{background:rgba(205,127,50,.15);border-color:#cd7f32}
+.madalyon{font-size:26px;margin-bottom:4px}
+.skorIsim{font-size:12px;font-weight:bold;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.skorPuan{font-size:11px;opacity:.8}
+#liste{display:flex;flex-direction:column;gap:10px}
+.satir{background:rgba(255,255,255,.1);border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:12px;border-left:5px solid #ffd700}
+.satir.yeni{border-left-color:#00e676;box-shadow:0 0 20px rgba(0,230,118,.4)}
+.sira{font-size:20px;font-weight:bold;text-align:center;color:gold}
+.sira.ilk{font-size:26px}
+.isimYazi{font-size:16px;font-weight:bold;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.detay{font-size:12px;opacity:.75;margin-top:2px}
+.yorum{font-size:13px;font-style:italic;opacity:.85;margin-top:6px;padding-left:8px;border-left:2px solid rgba(255,215,0,.5)}
+.yildizlar{font-size:20px;letter-spacing:2px;text-align:right;color:#ffc107;white-space:nowrap}
+.bos{color:#555}
+.zaman{font-size:11px;opacity:.55;text-align:right;margin-top:4px}
+.bosEkran{text-align:center;padding:40px 20px;opacity:.7;font-size:15px}
+.kayitSayisi{text-align:center;font-size:13px;opacity:.75;margin-top:18px}
+.kayitSayisi b{color:gold}
+.istatistik{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0}
+.istat{background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.3);border-radius:12px;padding:14px;text-align:center}
+.istat .bSayi{font-size:28px;font-weight:bold;color:#00e676}
+.istat .bEtiket{font-size:11px;opacity:.7;margin-top:4px}
+.modalArka{position:fixed;inset:0;background:#000;z-index:200;display:flex;justify-content:center;align-items:flex-start;overflow-y:auto}
+.modalKart{background:#0a0a0a;color:#fff;border:1px solid #1a1a1a;width:100%;max-width:700px;min-height:100vh;padding:20px 16px;position:relative}
+.modalKapat{position:absolute;top:16px;right:16px;background:#1a1a1a;border:1px solid #333;color:#fff;width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer}
+.sifreWrap{max-width:340px;margin:80px auto;text-align:center}
+.sifreWrap h2{font-size:20px;margin-bottom:24px;color:#00e676}
+.sifreInput{width:100%;padding:14px 18px;border-radius:10px;border:2px solid #00e676;background:#000;color:#00e676;font-size:16px;text-align:center;outline:none;letter-spacing:3px}
+.girisBtn{width:100%;padding:14px;border-radius:10px;background:#00e676;border:none;color:#000;font-weight:bold;font-size:15px;cursor:pointer;margin-top:12px}
+.hataYazi{color:#f44336;margin-top:10px;font-size:13px}
+.panelBaslik{display:flex;align-items:center;gap:10px;padding:8px 0 16px;border-bottom:1px solid #1a1a1a;margin-bottom:16px}
+.panelBaslik h2{color:#00e676;font-size:16px}
+.panelBaslik .sayac{margin-left:auto;font-size:12px;opacity:.6}
+.tabs{display:flex;gap:4px;border-bottom:1px solid #1a1a1a;margin-bottom:16px;overflow-x:auto}
+.tabBtn{background:transparent;border:none;color:#666;font-size:12px;font-weight:bold;padding:10px 14px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tabBtn.aktif{color:#00e676;border-bottom-color:#00e676}
+.telKart{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:12px 14px;margin-bottom:10px;border-left:4px solid #333}
+.telKart.online{border-left-color:#00e676}
+.telKart.banli{border-left-color:#f44336;opacity:.5}
+.telUst{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.telIsim{font-weight:bold;color:#fff;font-size:14px}
+.telDurum{margin-left:auto;font-size:10px;font-weight:bold;padding:3px 10px;border-radius:10px}
+.telDurum.online{background:#00e676;color:#000}
+.telDurum.offline{background:#333;color:#888}
+.telDurum.banli{background:#f44336;color:#fff}
+.telBilgi{display:flex;flex-wrap:wrap;gap:6px;font-size:11px;color:#888;margin:6px 0}
+.telBilgi span{background:#1a1a1a;padding:3px 8px;border-radius:4px}
+.telBtnler{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.mBtn{background:#1a1a1a;color:#aaa;border:1px solid #333;border-radius:6px;padding:6px 12px;font-size:10px;font-weight:bold;cursor:pointer}
+.mBtn.ban{color:#ff6b6b;border-color:#5a1a1a}
+.mBtn.unban{color:#00e676;border-color:#1a5a1a}
+.mBtn.incele{color:#4fc3f7;border-color:#1a3a5a}
+.bilgiKart{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:16px}
+.bilgiBaslik{font-size:14px;color:#00e676;font-weight:bold;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #1a1a1a}
+.bilgiSatir{display:flex;justify-content:space-between;padding:8px 0;font-size:12px;border-bottom:1px solid #151515}
+.bilgiSatir:last-child{border-bottom:none}
+.bilgiSatir .anahtar{color:#666}
+.bilgiSatir .deger{color:#fff;text-align:right;word-break:break-all;max-width:60%}
+.bosListe{text-align:center;padding:40px 20px;color:#333;font-size:12px}
+.yenileBtn{width:100%;margin-top:16px;background:#00e676;color:#000;border:none;padding:12px;border-radius:10px;font-weight:bold;cursor:pointer}
+.msgWrap{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:16px;margin-bottom:12px}
+.msgWrap h3{font-size:13px;color:#00e676;margin-bottom:10px}
+.msgTextarea{width:100%;padding:12px;border-radius:10px;border:1px solid #333;background:#000;color:#fff;font-size:13px;resize:none;height:80px;font-family:inherit;outline:none}
+.msgHedef{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
+.msgHedef button{background:#1a1a1a;color:#aaa;border:1px solid #333;border-radius:6px;padding:8px 14px;font-size:11px;font-weight:bold;cursor:pointer}
+.msgHedef button.aktif{background:#00e676;color:#000;border-color:#00e676}
+.msgGonder{width:100%;background:#00e676;color:#000;border:none;padding:12px;border-radius:10px;font-weight:bold;cursor:pointer;margin-top:10px}
+.msgListe{max-height:300px;overflow-y:auto;margin-top:10px}
+.msgOge{background:#1a1a1a;border-radius:8px;padding:10px;margin-bottom:8px;font-size:12px}
+.msgOge .msgTarih{font-size:10px;color:#666;margin-bottom:4px}
+.msgOge .msgIcerik{color:#ddd;white-space:pre-wrap}
+.msgOge .silBtn{background:#5a1a1a;color:#ff6b6b;border:none;border-radius:5px;padding:4px 10px;font-size:10px;cursor:pointer;margin-top:6px}
 </style>
 </head>
 <body>
-
 <div class="kart">
-  <button class="adminBtn" onclick="adminAc()">ADMIN</button>
-  <h1>Renk Carki Tablosu</h1>
-  <p class="alt">En yeni yorum en ustte!</p>
-  <div class="ustBar">
-    <button class="kucukBtn" onclick="yukle()">Yenile</button>
-    <button class="kucukBtn" onclick="location.href='index.html'">Oyuna Don</button>
-    <span class="durum" id="durum">Yukleniyor...</span>
-  </div>
-  <div id="liste"><div style="text-align:center;padding:40px;opacity:.7">Yukleniyor...</div></div>
-  <div class="kayitSayisi" id="kayitSayisi"></div>
+<button class="adminBtn" onclick="adminAc()">ADMIN</button>
+<h1>Renk Carki Tablosu</h1>
+<p class="alt">En yeni yorum en ustte!</p>
+<div class="skorlar" id="skorlar"></div>
+<div class="ustBar">
+<button class="kucukBtn" onclick="yukle()">Yenile</button>
+<button class="kucukBtn" onclick="location.href='index.html'">Oyuna Don</button>
+<span class="durum" id="durum">Yukleniyor...</span>
+</div>
+<div id="liste"><div style="text-align:center;padding:40px;opacity:.7">Yukleniyor...</div></div>
+<div class="kayitSayisi" id="kayitSayisi"></div>
 </div>
 
 <div id="adminModal" class="modalArka" style="display:none">
-  <div class="modalKart">
-    <button class="modalKapat" onclick="adminKapat()">X</button>
-    <div id="sifreEkran" class="sifreWrap">
-      <h2>ADMIN GIRISI</h2>
-      <input type="password" class="sifreInput" id="sifreInput" placeholder="......">
-      <button class="girisBtn" onclick="sifreKontrol()">GIRIS</button>
-      <div class="hataYazi" id="sifreHata"></div>
-    </div>
-    <div id="panelEkran" style="display:none">
-      <div class="panelBaslik">
-        <h2>ADMIN PANEL</h2>
-        <span class="sayac" id="sayac"></span>
-      </div>
-      <div class="tabs">
-        <button class="tabBtn aktif" id="tabOnline" onclick="tabDegis('online')">ONLINE TELEFONLAR</button>
-        <button class="tabBtn" id="tabBilgi" onclick="tabDegis('bilgi')">BILGILER</button>
-        <button class="tabBtn" id="tabBan" onclick="tabDegis('ban')">BAN LISTESI</button>
-      </div>
-      <div id="tabIcerik"></div>
-      <button class="yenileBtn" onclick="panelYenile()">YENILE</button>
-      <div class="sonGuncelleme" id="sonGuncelleme"></div>
-    </div>
-  </div>
+<div class="modalKart">
+<button class="modalKapat" onclick="adminKapat()">X</button>
+<div id="sifreEkran" class="sifreWrap">
+<h2>ADMIN GIRISI</h2>
+<input type="password" class="sifreInput" id="sifreInput" placeholder="......">
+<button class="girisBtn" onclick="sifreKontrol()">GIRIS</button>
+<div class="hataYazi" id="sifreHata"></div>
+</div>
+<div id="panelEkran" style="display:none">
+<div class="panelBaslik"><h2>ADMIN PANEL</h2><span class="sayac" id="sayac"></span></div>
+<div class="tabs">
+<button class="tabBtn aktif" id="tabOnline" onclick="tabDegis('online')">TELEFONLAR</button>
+<button class="tabBtn" id="tabBilgi" onclick="tabDegis('bilgi')">BILGILER</button>
+<button class="tabBtn" id="tabBan" onclick="tabDegis('ban')">BAN</button>
+<button class="tabBtn" id="tabMesaj" onclick="tabDegis('mesaj')">MESAJ</button>
+<button class="tabBtn" id="tabIstatistik" onclick="tabDegis('istatistik')">ISTATISTIK</button>
+</div>
+<div id="tabIcerik"></div>
+<button class="yenileBtn" onclick="panelYenile()">YENILE</button>
+</div>
+</div>
 </div>
 
 <script>
-var DB_URL = "https://renk-95728-default-rtdb.firebaseio.com";
-var ADMIN_SIFRE = "utkan9292";
-var aktifTab = "online";
-var seciliCihazId = null;
-var tumCihazlar = [];
-var tumBanlar = { devices: {}, ips: {} };
+var DB="https://renk-95728-default-rtdb.firebaseio.com";
+var SIFRE="utkan9292";
+var aktifTab="online",aktifHedef="herkes",secCihaz=null;
+var cihazlar=[],banlar={devices:{},ips:{}},kayitlar=[],mesajlar={};
 
-function zamanFormatla(iso) {
-  var t = new Date(iso);
-  var fark = Math.floor((new Date() - t) / 1000);
-  if (fark < 60) return "az once";
-  if (fark < 3600) return Math.floor(fark / 60) + " dk once";
-  if (fark < 86400) return Math.floor(fark / 3600) + " sa once";
-  return Math.floor(fark / 86400) + " gun once";
+function zF(iso){var t=new Date(iso),s=new Date(),f=Math.floor((s-t)/1000);if(f<60)return"az once";if(f<3600)return Math.floor(f/60)+" dk once";if(f<86400)return Math.floor(f/3600)+" sa once";return Math.floor(f/86400)+" gun once";}
+
+async function yukle(){
+document.getElementById("durum").textContent="Yukleniyor...";
+try{
+var r=await fetch(DB+"/kayitlar.json");
+if(!r.ok)throw new Error("HTTP "+r.status);
+var d=await r.json();
+kayitlar=d?Object.values(d):[];
+kayitlar.sort(function(a,b){return new Date(b.tarih)-new Date(a.tarih);});
+skorCiz();
+var kap=document.getElementById("liste");kap.innerHTML="";
+if(kayitlar.length===0){kap.innerHTML='<div class="bosEkran">Henuz kimse yildiz vermedi!<br>Ilk sen ol!</div>';}
+else{
+for(var i=0;i<kayitlar.length;i++){
+var k=kayitlar[i],y=Math.max(1,Math.min(5,k.yildiz||0)),yh="";
+for(var j=1;j<=5;j++)yh+=j<=y?"<span>*</span>":'<span class="bos">*</span>';
+var s=document.createElement("div");s.className="satir"+(i===0?" yeni":"");
+s.innerHTML='<div class="sira '+(i===0?"ilk":"")+'">'+(i===0?"1.":(i+1))+'</div><div><div class="isimYazi">'+k.isim+'</div><div class="detay">'+k.deneme+' denemede esitlendi</div>'+(k.yorum?'<div class="yorum">"'+k.yorum+'"</div>':'')+'</div><div><div class="yildizlar">'+yh+'</div><div class="zaman">'+zF(k.tarih)+'</div></div>';
+kap.appendChild(s);
 }
-
-async function yukle() {
-  document.getElementById("durum").textContent = "Yukleniyor...";
-  try {
-    var res = await fetch(DB_URL + "/kayitlar.json");
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    var data = await res.json();
-    var liste = data ? Object.values(data) : [];
-    liste.sort(function(a, b) { return new Date(b.tarih) - new Date(a.tarih); });
-    var kap = document.getElementById("liste");
-    kap.innerHTML = "";
-    if (liste.length === 0) {
-      kap.innerHTML = '<div class="bosEkran">Henuz kimse yildiz vermedi!<br>Ilk sen ol!</div>';
-    } else {
-      for (var idx = 0; idx < liste.length; idx++) {
-        var k = liste[idx];
-        var y = Math.max(1, Math.min(5, k.yildiz || 0));
-        var yildizHTML = "";
-        for (var i = 1; i <= 5; i++) yildizHTML += i <= y ? "<span>*</span>" : '<span class="bos">*</span>';
-        var satir = document.createElement("div");
-        satir.className = "satir" + (idx === 0 ? " yeni" : "");
-        satir.innerHTML = '<div class="sira ' + (idx === 0 ? "ilk" : "") + '">' + (idx === 0 ? "1." : (idx + 1)) + '</div>' +
-          '<div class="orta"><div class="isimYazi">' + k.isim + '</div><div class="detay">' + k.deneme + ' denemede esitlendi</div></div>' +
-          '<div><div class="yildizlar">' + yildizHTML + '</div><div class="zaman">' + zamanFormatla(k.tarih) + '</div></div>';
-        kap.appendChild(satir);
-      }
-    }
-    document.getElementById("kayitSayisi").innerHTML = 'Toplam <b>' + liste.length + '</b> kayit - ' + new Date().toLocaleTimeString("tr-TR");
-    document.getElementById("durum").textContent = "Guncel";
-  } catch (err) {
-    document.getElementById("durum").textContent = "Hata";
-    document.getElementById("liste").innerHTML = '<div class="bosEkran">Veriler yuklenemedi: ' + err.message + '</div>';
-  }
+}
+document.getElementById("kayitSayisi").innerHTML='Toplam <b>'+kayitlar.length+'</b> kayit - '+new Date().toLocaleTimeString("tr-TR");
+document.getElementById("durum").textContent="Guncel";
+}catch(e){document.getElementById("durum").textContent="Hata";document.getElementById("liste").innerHTML='<div class="bosEkran">Veri yuklenemedi.</div>';}
 }
 
-function adminAc() {
-  document.getElementById("adminModal").style.display = "flex";
-  document.getElementById("sifreEkran").style.display = "block";
-  document.getElementById("panelEkran").style.display = "none";
-  document.getElementById("sifreInput").value = "";
-  document.getElementById("sifreHata").textContent = "";
+function skorCiz(){
+if(kayitlar.length===0){document.getElementById("skorlar").innerHTML="";return;}
+var s=kayitlar.slice().sort(function(a,b){if(b.yildiz!==a.yildiz)return b.yildiz-a.yildiz;return a.deneme-b.deneme;});
+var ilk=s.slice(0,3),md=["&#129351;","&#129352;","&#129353;"],sn=["altin","gumus","bronz"],h="";
+for(var i=0;i<3;i++){
+if(!ilk[i])h+='<div class="skorKart"><div class="madalyon">'+md[i]+'</div><div class="skorIsim">-</div><div class="skorPuan">-</div></div>';
+else h+='<div class="skorKart '+sn[i]+'"><div class="madalyon">'+md[i]+'</div><div class="skorIsim">'+ilk[i].isim+'</div><div class="skorPuan">'+ilk[i].yildiz+' yildiz - '+ilk[i].deneme+' deneme</div></div>';
 }
-function adminKapat() { document.getElementById("adminModal").style.display = "none"; }
-function sifreKontrol() {
-  if (document.getElementById("sifreInput").value === ADMIN_SIFRE) {
-    document.getElementById("sifreEkran").style.display = "none";
-    document.getElementById("panelEkran").style.display = "block";
-    panelYenile();
-  } else {
-    document.getElementById("sifreHata").textContent = "Yanlis sifre!";
-  }
+document.getElementById("skorlar").innerHTML=h;
 }
 
-function tabDegis(tab) {
-  aktifTab = tab;
-  var btnler = document.querySelectorAll(".tabBtn");
-  for (var i = 0; i < btnler.length; i++) btnler[i].classList.remove("aktif");
-  document.getElementById("tab" + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add("aktif");
-  panelCiz();
+function adminAc(){document.getElementById("adminModal").style.display="flex";document.getElementById("sifreEkran").style.display="block";document.getElementById("panelEkran").style.display="none";document.getElementById("sifreInput").value="";document.getElementById("sifreHata").textContent="";}
+function adminKapat(){document.getElementById("adminModal").style.display="none";}
+function sifreKontrol(){if(document.getElementById("sifreInput").value===SIFRE){document.getElementById("sifreEkran").style.display="none";document.getElementById("panelEkran").style.display="block";panelYenile();}else{document.getElementById("sifreHata").textContent="Yanlis sifre!";}}
+
+function tabDegis(t){aktifTab=t;var b=document.querySelectorAll(".tabBtn");for(var i=0;i<b.length;i++)b[i].classList.remove("aktif");document.getElementById("tab"+t.charAt(0).toUpperCase()+t.slice(1)).classList.add("aktif");panelCiz();}
+
+async function panelYenile(){
+try{
+var pr=await fetch(DB+"/presence.json"),bd=await fetch(DB+"/bans/devices.json"),bi=await fetch(DB+"/bans/ips.json"),mr=await fetch(DB+"/mesajlar.json");
+var p=(await pr.json())||{};banlar.devices=(await bd.json())||{};banlar.ips=(await bi.json())||{};mesajlar=(await mr.json())||{};
+var sn=Date.now(),arr=[];
+for(var k in p){var c=p[k];arr.push({deviceId:c.deviceId||k,ip:c.ip||"?",lastSeen:c.lastSeen,firstSeen:c.firstSeen,bilgi:c.bilgi||{},isOnline:(sn-new Date(c.lastSeen).getTime())<180000,banli:!!banlar.devices[c.deviceId||k]});}
+arr.sort(function(a,b){return new Date(b.lastSeen)-new Date(a.lastSeen);});
+for(var i=0;i<arr.length;i++)arr[i].isim="Telefon "+(i+1);
+cihazlar=arr;
+var online=0;for(var i=0;i<cihazlar.length;i++)if(cihazlar[i].isOnline&&!cihazlar[i].banli)online++;
+document.getElementById("sayac").textContent=online+" online / "+cihazlar.length+" toplam";
+panelCiz();
+}catch(e){document.getElementById("tabIcerik").innerHTML='<div class="bosListe">Veri alinamadi</div>';}
 }
 
-async function panelYenile() {
-  try {
-    var presRes = await fetch(DB_URL + "/presence.json");
-    var bdRes = await fetch(DB_URL + "/bans/devices.json");
-    var biRes = await fetch(DB_URL + "/bans/ips.json");
-    var pres = (await presRes.json()) || {};
-    tumBanlar.devices = (await bdRes.json()) || {};
-    tumBanlar.ips = (await biRes.json()) || {};
-    var simdi = Date.now();
-    var arr = [];
-    for (var key in pres) {
-      var p = pres[key];
-      arr.push({
-        deviceId: p.deviceId || key,
-        ip: p.ip || "?",
-        lastSeen: p.lastSeen,
-        firstSeen: p.firstSeen,
-        bilgi: p.bilgi || {},
-        isOnline: (simdi - new Date(p.lastSeen).getTime()) < 180000,
-        banli: !!tumBanlar.devices[p.deviceId || key]
-      });
-    }
-    arr.sort(function(a, b) { return new Date(b.lastSeen) - new Date(a.lastSeen); });
-    for (var i = 0; i < arr.length; i++) arr[i].isim = "Telefon " + (i + 1);
-    tumCihazlar = arr;
-    var onlineSayi = 0;
-    for (var i = 0; i < tumCihazlar.length; i++) if (tumCihazlar[i].isOnline && !tumCihazlar[i].banli) onlineSayi++;
-    document.getElementById("sayac").textContent = onlineSayi + " online / " + tumCihazlar.length + " toplam";
-    panelCiz();
-    document.getElementById("sonGuncelleme").textContent = "Son guncelleme: " + new Date().toLocaleTimeString("tr-TR");
-  } catch(e) {
-    document.getElementById("tabIcerik").innerHTML = '<div class="bosListe">Veri alinamadi</div>';
-  }
+function panelCiz(){
+var ic=document.getElementById("tabIcerik");
+if(aktifTab==="online")ic.innerHTML=onlineHtml();
+else if(aktifTab==="bilgi")ic.innerHTML=bilgiHtml();
+else if(aktifTab==="ban")ic.innerHTML=banHtml();
+else if(aktifTab==="mesaj")ic.innerHTML=mesajHtml();
+else if(aktifTab==="istatistik")ic.innerHTML=istatistikHtml();
 }
 
-function panelCiz() {
-  var ic = document.getElementById("tabIcerik");
-  if (aktifTab === "online") ic.innerHTML = onlineHtml();
-  else if (aktifTab === "bilgi") ic.innerHTML = bilgiHtml();
-  else if (aktifTab === "ban") ic.innerHTML = banHtml();
+function onlineHtml(){
+if(cihazlar.length===0)return'<div class="bosListe">Henuz kimse girmemis</div>';
+var h="";
+for(var i=0;i<cihazlar.length;i++){
+var c=cihazlar[i],sn=Math.floor((Date.now()-new Date(c.lastSeen).getTime())/1000),sg=sn<60?sn+" sn":sn<3600?Math.floor(sn/60)+" dk":Math.floor(sn/3600)+" sa";
+var d=c.banli?"banli":(c.isOnline?"online":"offline"),dy=c.banli?"BANLI":(c.isOnline?"ONLINE":"OFFLINE");
+var b=c.bilgi||{},ik=(c.ip||"").replace(/\./g,"_");
+h+='<div class="telKart '+d+'"><div class="telUst"><span class="telIsim">'+c.isim+'</span><span class="telDurum '+d+'">'+dy+'</span></div>';
+h+='<div class="telBilgi"><span>Marka: '+(b.marka||"?")+'</span><span>IP: '+(c.ip||"?")+'</span><span>'+sg+' once</span></div>';
+h+='<div class="telBtnler"><button class="mBtn incele" onclick="cihazIncele(\''+c.deviceId+'\')">INCELE</button>';
+if(!c.banli)h+='<button class="mBtn ban" onclick="cihazBan(\''+c.deviceId+'\')">CIHAZ BAN</button>';
+else h+='<button class="mBtn unban" onclick="cihazUnban(\''+c.deviceId+'\')">BAN KALDIR</button>';
+if(c.ip&&c.ip!=="bilinmiyor"&&!banlar.ips[ik])h+='<button class="mBtn ban" onclick="ipBan(\''+c.ip+'\')">IP BAN</button>';
+else if(banlar.ips[ik])h+='<button class="mBtn unban" onclick="ipUnban(\''+ik+'\')">IP KALDIR</button>';
+h+='</div></div>';
+}
+return h;
 }
 
-function onlineHtml() {
-  if (tumCihazlar.length === 0) return '<div class="bosListe">Henuz kimse girmemis</div>';
-  var html = "";
-  for (var i = 0; i < tumCihazlar.length; i++) {
-    var c = tumCihazlar[i];
-    var sn = Math.floor((Date.now() - new Date(c.lastSeen).getTime()) / 1000);
-    var sonGor = sn < 60 ? sn + " sn once" : sn < 3600 ? Math.floor(sn/60) + " dk once" : Math.floor(sn/3600) + " sa once";
-    var durum = c.banli ? "banli" : (c.isOnline ? "online" : "offline");
-    var durumYazi = c.banli ? "BANLI" : (c.isOnline ? "ONLINE" : "OFFLINE");
-    var b = c.bilgi || {};
-    var ipKey = (c.ip || "").replace(/\./g, "_");
-    html += '<div class="telKart ' + durum + '">';
-    html += '<div class="telUst"><span class="telIsim">' + c.isim + '</span><span class="telId">' + (c.deviceId || "").substring(0, 12) + '...</span><span class="telDurum ' + durum + '">' + durumYazi + '</span></div>';
-    html += '<div class="telBilgiSatir"><span>Marka: ' + (b.marka || "?") + '</span><span>IP: ' + (c.ip || "?") + '</span><span>' + sonGor + '</span></div>';
-    html += '<div class="telButonlar">';
-    html += '<button class="mBtn incele" onclick="cihazIncele(\'' + c.deviceId + '\')">INCELE</button>';
-    if (!c.banli) html += '<button class="mBtn ban" onclick="cihazBan(\'' + c.deviceId + '\')">CIHAZ BAN</button>';
-    else html += '<button class="mBtn unban" onclick="cihazUnban(\'' + c.deviceId + '\')">BAN KALDIR</button>';
-    if (c.ip && c.ip !== "bilinmiyor" && !tumBanlar.ips[ipKey]) html += '<button class="mBtn ban" onclick="ipBan(\'' + c.ip + '\')">IP BAN</button>';
-    else if (tumBanlar.ips[ipKey]) html += '<button class="mBtn unban" onclick="ipUnban(\'' + ipKey + '\')">IP KALDIR</button>';
-    html += '</div></div>';
-  }
-  return html;
+function bilgiHtml(){
+if(!secCihaz)return'<div class="bosListe">Bir cihaz secmek icin<br>Telefonlar sekmesinde<br>INCELE butonuna bas</div>';
+var c=null;for(var i=0;i<cihazlar.length;i++)if(cihazlar[i].deviceId===secCihaz){c=cihazlar[i];break;}
+if(!c)return'<div class="bosListe">Cihaz bulunamadi</div>';
+var b=c.bilgi||{},sn=Math.floor((Date.now()-new Date(c.lastSeen).getTime())/1000),sg=sn<60?sn+" sn":sn<3600?Math.floor(sn/60)+" dk":Math.floor(sn/3600)+" sa";
+var ig=new Date(c.firstSeen).toLocaleString("tr-TR");
+var sat=[["Cihaz ID",c.deviceId],["Isim",c.isim],["IP Adresi",c.ip||"?"],["Marka",b.marka||"?"],["Isletim Sistemi",b.os||"?"],["Tarayici",b.tarayici||"?"],["Ekran",b.ekran||"?"],["Dil",b.dil||"?"],["Mobil mi?",b.mobil?"Evet":"Hayir"],["Ilk Gorulme",ig],["Son Gorulme",sg+" once"]];
+var h='<div class="bilgiKart"><div class="bilgiBaslik">'+c.isim+' - Bilgiler</div>';
+for(var i=0;i<sat.length;i++)h+='<div class="bilgiSatir"><span class="anahtar">'+sat[i][0]+'</span><span class="deger">'+sat[i][1]+'</span></div>';
+return h+'</div>';
 }
 
-function bilgiHtml() {
-  if (!seciliCihazId) return '<div class="bosListe">Bir cihaz secmek icin<br>Online Telefonlar sekmesinde<br>INCELE butonuna bas</div>';
-  var c = null;
-  for (var i = 0; i < tumCihazlar.length; i++) if (tumCihazlar[i].deviceId === seciliCihazId) { c = tumCihazlar[i]; break; }
-  if (!c) return '<div class="bosListe">Cihaz bulunamadi</div>';
-  var b = c.bilgi || {};
-  var sn = Math.floor((Date.now() - new Date(c.lastSeen).getTime()) / 1000);
-  var sonGor = sn < 60 ? sn + " sn once" : sn < 3600 ? Math.floor(sn/60) + " dk once" : Math.floor(sn/3600) + " sa once";
-  var ilkGor = new Date(c.firstSeen).toLocaleString("tr-TR");
-  var satirlar = [
-    ["Cihaz ID", c.deviceId], ["Isim", c.isim], ["IP Adresi", c.ip || "?"],
-    ["Marka", b.marka || "?"], ["Isletim Sistemi", b.os || "?"], ["Tarayici", b.tarayici || "?"],
-    ["Ekran", b.ekran || "?"], ["Dil", b.dil || "?"], ["Saat Dilimi", b.saatDilimi || "?"],
-    ["Mobil mi?", b.mobil ? "Evet" : "Hayir"], ["Cekirdek", b.cekirdek || "?"],
-    ["Dokunmatik", b.dokunmatik ? "Evet" : "Hayir"],
-    ["Ilk Gorulme", ilkGor], ["Son Gorulme", sonGor]
-  ];
-  var html = '<div class="bilgiKart"><div class="bilgiBaslik">' + c.isim + ' - Cihaz Bilgileri</div>';
-  for (var i = 0; i < satirlar.length; i++) html += '<div class="bilgiSatir"><span class="anahtar">' + satirlar[i][0] + '</span><span class="deger">' + satirlar[i][1] + '</span></div>';
-  html += '</div>';
-  return html;
+function banHtml(){
+var bd=Object.keys(banlar.devices||{}),bi=Object.keys(banlar.ips||{});
+if(bd.length===0&&bi.length===0)return'<div class="bosListe">Henuz banlanan yok</div>';
+var h="";
+if(bd.length>0){h+='<div style="font-size:12px;color:#f44336;margin:12px 0 8px">BANLI CIHAZLAR ('+bd.length+')</div>';
+for(var i=0;i<bd.length;i++){var k=bd[i],v=banlar.devices[k];h+='<div class="telKart banli"><div class="telUst"><span class="telIsim">'+k.substring(0,16)+'...</span><span class="telDurum banli">BANLI</span></div><div class="telBilgi"><span>'+new Date(v.tarih).toLocaleString("tr-TR")+'</span></div><div class="telBtnler"><button class="mBtn unban" onclick="cihazUnban(\''+k+'\')">BANI KALDIR</button></div></div>';}}
+if(bi.length>0){h+='<div style="font-size:12px;color:#f44336;margin:16px 0 8px">BANLI IP\'LER ('+bi.length+')</div>';
+for(var i=0;i<bi.length;i++){var k=bi[i],v=banlar.ips[k];h+='<div class="telKart banli"><div class="telUst"><span class="telIsim">'+v.ip+'</span><span class="telDurum banli">BANLI</span></div><div class="telBilgi"><span>'+new Date(v.tarih).toLocaleString("tr-TR")+'</span></div><div class="telBtnler"><button class="mBtn unban" onclick="ipUnban(\''+k+'\')">BANI KALDIR</button></div></div>';}}
+return h;
 }
 
-function banHtml() {
-  var bdKeys = Object.keys(tumBanlar.devices || {});
-  var biKeys = Object.keys(tumBanlar.ips || {});
-  if (bdKeys.length === 0 && biKeys.length === 0) return '<div class="bosListe">Henuz banlanan yok</div>';
-  var html = "";
-  if (bdKeys.length > 0) {
-    html += '<div style="font-size:12px;color:#f44336;margin:12px 0 8px;">BANLI CIHAZLAR (' + bdKeys.length + ')</div>';
-    for (var i = 0; i < bdKeys.length; i++) {
-      var k = bdKeys[i];
-      var v = tumBanlar.devices[k];
-      html += '<div class="telKart banli"><div class="telUst"><span class="telIsim">' + k.substring(0,16) + '...</span><span class="telDurum banli">BANLI</span></div>';
-      html += '<div class="telBilgiSatir"><span>' + new Date(v.tarih).toLocaleString("tr-TR") + '</span></div>';
-      html += '<div class="telButonlar"><button class="mBtn unban" onclick="cihazUnban(\'' + k + '\')">BANI KALDIR</button></div></div>';
-    }
-  }
-  if (biKeys.length > 0) {
-    html += '<div style="font-size:12px;color:#f44336;margin:16px 0 8px;">BANLI IPLER (' + biKeys.length + ')</div>';
-    for (var i = 0; i < biKeys.length; i++) {
-      var k = biKeys[i];
-      var v = tumBanlar.ips[k];
-      html += '<div class="telKart banli"><div class="telUst"><span class="telIsim">' + v.ip + '</span><span class="telDurum banli">BANLI</span></div>';
-      html += '<div class="telBilgiSatir"><span>' + new Date(v.tarih).toLocaleString("tr-TR") + '</span></div>';
-      html += '<div class="telButonlar"><button class="mBtn unban" onclick="ipUnban(\'' + k + '\')">BANI KALDIR</button></div></div>';
-    }
-  }
-  return html;
+function mesajHtml(){
+var mKeys=Object.keys(mesajlar||{}).sort(function(a,b){return new Date(mesajlar[b].tarih)-new Date(mesajlar[a].tarih);});
+var h='<div class="msgWrap"><h3>YENI MESAJ GONDER</h3>';
+h+='<textarea class="msgTextarea" id="yeniMesaj" placeholder="Mesajini yaz..."></textarea>';
+h+='<div class="msgHedef">';
+h+='<button class="'+((aktifHedef==="herkes")?"aktif":"")+'" onclick="hedefSec(\'herkes\')">HERKES</button>';
+h+='<button class="'+((aktifHedef==="online")?"aktif":"")+'" onclick="hedefSec(\'online\')">ONLINE</button>';
+h+='<button class="'+((aktifHedef==="offline")?"aktif":"")+'" onclick="hedefSec(\'offline\')">OFFLINE</button>';
+h+='</div><button class="msgGonder" onclick="mesajGonder()">MESAJ GONDER</button></div>';
+h+='<div style="font-size:12px;color:#00e676;margin:12px 0 8px">GONDERILEN MESAJLAR ('+mKeys.length+')</div>';
+if(mKeys.length===0)h+='<div class="bosListe">Henuz mesaj yok</div>';
+else{h+='<div class="msgListe">';for(var i=0;i<mKeys.length;i++){var k=mKeys[i],m=mesajlar[k];h+='<div class="msgOge"><div class="msgTarih">'+new Date(m.tarih).toLocaleString("tr-TR")+' - '+(m.hedef||"herkes")+'</div><div class="msgIcerik">'+m.metin+'</div><button class="silBtn" onclick="mesajSil(\''+k+'\')">SIL</button></div>';}h+='</div>';}
+return h;
 }
 
-function cihazIncele(id) { seciliCihazId = id; tabDegis("bilgi"); }
-async function cihazBan(deviceId) {
-  if (!confirm("Bu cihazi banlamak istediginize emin misiniz?")) return;
-  await fetch(DB_URL + "/bans/devices/" + deviceId + ".json", { method: "PUT", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ tarih: new Date().toISOString(), tip: "cihaz" }) });
-  panelYenile();
+function istatistikHtml(){
+var online=0,offline=0,banli=0;
+for(var i=0;i<cihazlar.length;i++){if(cihazlar[i].banli)banli++;else if(cihazlar[i].isOnline)online++;else offline++;}
+var toplamKayit=kayitlar.length;
+var toplamDeneme=0,toplamYildiz=0;
+for(var i=0;i<kayitlar.length;i++){toplamDeneme+=kayitlar[i].deneme||0;toplamYildiz+=kayitlar[i].yildiz||0;}
+var ortDeneme=toplamKayit>0?Math.round(toplamDeneme/toplamKayit):0;
+var h='<div class="istatistik">';
+h+='<div class="istat"><div class="bSayi">'+online+'</div><div class="bEtiket">ONLINE</div></div>';
+h+='<div class="istat"><div class="bSayi">'+offline+'</div><div class="bEtiket">OFFLINE</div></div>';
+h+='<div class="istat"><div class="bSayi">'+banli+'</div><div class="bEtiket">BANLI</div></div>';
+h+='<div class="istat
+ ">'+banli+'</div><div class="bEtiket">BANLI</div></div>';
+h+='<div class="istat"><div class="bSayi">'+cihazlar.length+'</div><div class="bEtiket">TOPLAM CIHAZ</div></div>';
+h+='<div class="istat"><div class="bSayi">'+toplamKayit+'</div><div class="bEtiket">OYUN OYNANDI</div></div>';
+h+='<div class="istat"><div class="bSayi">'+ortDeneme+'</div><div class="bEtiket">ORT. DENEME</div></div>';
+h+='<div class="istat"><div class="bSayi">'+toplamYildiz+'</div><div class="bEtiket">TOPLAM YILDIZ</div></div>';
+h+='<div class="istat"><div class="bSayi">'+Object.keys(mesajlar).length+'</div><div class="bEtiket">MESAJ SAYISI</div></div>';
+return h+'</div>';
 }
-async function cihazUnban(deviceId) {
-  await fetch(DB_URL + "/bans/devices/" + deviceId + ".json", { method: "DELETE" });
-  panelYenile();
+
+function hedefSec(h){aktifHedef=h;panelCiz();}
+
+function mesajGonder(){
+var m=document.getElementById("yeniMesaj").value.trim();
+if(!m){alert("Mesaj bos!");return;}
+fetch(DB+"/mesajlar.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({metin:m,hedef:aktifHedef,tarih:new Date().toISOString()})}).then(function(){alert("Mesaj gonderildi!");panelYenile();});
 }
-async function ipBan(ip) {
-  if (!confirm(ip + " adresini banlamak istediginize emin misiniz?")) return;
-  var key = ip.replace(/\./g, "_");
-  await fetch(DB_URL + "/bans/ips/" + key + ".json", { method: "PUT", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ ip: ip, tarih: new Date().toISOString(), tip: "ip" }) });
-  panelYenile();
+
+function mesajSil(id){
+if(!confirm("Silinsin mi?"))return;
+fetch(DB+"/mesajlar/"+id+".json",{method:"DELETE"}).then(function(){panelYenile();});
 }
-async function ipUnban(key) {
-  await fetch(DB_URL + "/bans/ips/" + key + ".json", { method: "DELETE" });
-  panelYenile();
-}
+
+function cihazIncele(id){secCihaz=id;tabDegis("bilgi");}
+function cihazBan(d){if(!confirm("Banlanacak?"))return;fetch(DB+"/bans/devices/"+d+".json",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({tarih:new Date().toISOString()})}).then(function(){panelYenile();});}
+function cihazUnban(d){fetch(DB+"/bans/devices/"+d+".json",{method:"DELETE"}).then(function(){panelYenile();});}
+function ipBan(ip){if(!confirm(ip+" banlanacak?"))return;var k=ip.replace(/\./g,"_");fetch(DB+"/bans/ips/"+k+".json",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({ip:ip,tarih:new Date().toISOString()})}).then(function(){panelYenile();});}
+function ipUnban(k){fetch(DB+"/bans/ips/"+k+".json",{method:"DELETE"}).then(function(){panelYenile();});}
 
 yukle();
 </script>
