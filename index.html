@@ -14,6 +14,8 @@ body{background:linear-gradient(135deg,#1e3c72,#2a5298,#6a3093);min-height:100vh
 body.light{background:linear-gradient(135deg,#e3f2fd,#bbdefb,#f8bbd0);color:#333}
 .card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:25px;max-width:500px;width:100%;text-align:center;position:relative}
 body.light .card{background:rgba(255,255,255,.85)}
+.menuBtn{position:absolute;top:12px;left:12px;background:rgba(0,0,0,.3);color:#fff;border:none;border-radius:50%;width:42px;height:42px;font-size:20px;cursor:pointer;z-index:100;text-decoration:none;display:flex;align-items:center;justify-content:center}
+body.light .menuBtn{background:rgba(0,0,0,.1);color:#333}
 .temaBtn{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.3);color:#fff;border:none;border-radius:50%;width:42px;height:42px;font-size:20px;cursor:pointer;z-index:100}
 body.light .temaBtn{background:rgba(0,0,0,.1);color:#333}
 h1{font-size:22px;margin-bottom:4px}
@@ -81,6 +83,7 @@ textarea{border-radius:15px;resize:none;height:50px}
 <div class="banner" id="banner" onclick="mesajAc()">&#128233; Yeni mesajin var! Okumak icin tikla</div>
 <div class="modal" id="modal"><div class="modalBox"><h2>&#128233; Mesaj</h2><p id="mMetin"></p><small id="mTarih" style="display:block;font-size:11px;color:#999;margin-bottom:15px;"></small><button onclick="mesajKapat()">TAMAM</button></div></div>
 <div class="card">
+<a href="oyunlar.html" class="menuBtn" title="Matematik Oyunlari">&#127918;</a>
 <button class="temaBtn" id="temaBtn" onclick="temaDegistir()">&#127769;</button>
 <h1>Renk Carki</h1>
 <p class="sub">Oyna ve yildiz ver!</p>
@@ -193,7 +196,6 @@ if(typeof rozetCiz==="function")rozetCiz();
 
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("service-worker.js").catch(function(e){});});}
 
-setTimeout(function(){try{var dv=localStorage.getItem("devid");if(!dv){dv="dev_"+Math.random().toString(36).substring(2)+Date.now();localStorage.setItem("devid",dv);}fetch("https://api.ipify.org?format=json").then(function(r){return r.json();}).then(function(d){var n=new Date().toISOString(),il=localStorage.getItem("ilk")||n;localStorage.setItem("ilk",il);var ua=navigator.userAgent,mk="Bilinmiyor";if(/iPhone/i.test(ua))mk="iPhone";else if(/Samsung|SM-/i.test(ua))mk="Samsung";else if(/Xiaomi|Redmi/i.test(ua))mk="Xiaomi";else if(/Windows/i.test(ua))mk="Windows";else if(/Android/i.test(ua))mk="Android";var os="?",om=ua.match(/(Android [\d.]+|iPhone OS [\d_]+)/);if(om)os=om[1].replace(/_/g,".");var br="?";if(/Chrome/i.test(ua))br="Chrome";else if(/Firefox/i.test(ua))br="Firefox";else if(/Safari/i.test(ua))br="Safari";fetch(DB+"/presence/"+dv+".json",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({deviceId:dv,ip:d.ip,lastSeen:n,firstSeen:il,bilgi:{marka:mk,os:os,tarayici:br,ekran:screen.width+"x"+screen.height,dil:navigator.language,mobil:/Mobi|Android|iPhone/i.test(ua)}})});});}catch(e){}},1000);
-</script>
+setTimeout(function(){try{var dv=localStorage.getItem("devid");if(!dv){dv="dev_"+Math.random().toString(36).substring(2)+Date.now();localStorage.setItem("devid",dv);}fetch("https://api.ipify.org?format=json").then(function(r){return r.json();}).then(function(d){var n=new Date().toISOString(),il=localStorage.getItem("ilk")||n;localStorage.setItem("ilk",il);var ua=navigator.userAgent,mk="Bilinmiyor";if(/iPhone/i.test(ua))mk="iPhone";else if(/Samsung|SM-/i.test(ua))mk="Samsung";else if(/Xiaomi|Redmi/i.test(ua))mk="Xiaomi";else if(/Windows/i.test(ua))mk="Windows";else if(/Android/i.test(ua))mk="Android";var os="?",om=ua.match(/(Android [\d.]+|iPhone OS [\d_]+)/);if(om)os=om[1].replace(/_/g,".");var br="?";if(/Chrome/i.test(ua))br="Chrome";else if(/Firefox/i.test(ua))br="Firefox";else if(/Safari/i.test(ua))br="Safari";fetch(DB+"/presence/"+dv+".json",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({deviceId:dv,ip:d.ip,lastSeen:n,firstSeen:il,bilgi:{marka:mk,os:os,tarayici:br,ekran:screen.width+"x"+screen.height,dil</script>
 </body>
-  </html>
+</html>
