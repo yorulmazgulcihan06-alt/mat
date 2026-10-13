@@ -3,40 +3,369 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Test</title>
+<title>Renk Carki</title>
 <style>
-  body { margin: 0; padding: 20px; background: #1e3c72; color: #fff; font-family: sans-serif; text-align: center; min-height: 100vh; }
-  h1 { font-size: 24px; }
-  button { padding: 15px 30px; font-size: 18px; margin: 10px; border: none; border-radius: 50px; background: #ff512f; color: #fff; cursor: pointer; }
-  .yesil { background: #00c853; }
-  #durum { margin-top: 20px; font-size: 14px; opacity: 0.8; }
-  #sayi { font-size: 60px; color: #ffd700; margin: 20px; font-weight: bold; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+body { background: linear-gradient(135deg, #1e3c72, #2a5298, #6a3093); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; color: #fff; }
+body.light { background: linear-gradient(135deg, #e3f2fd, #bbdefb, #f8bbd0); color: #333; }
+.card { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 25px; max-width: 500px; width: 100%; text-align: center; position: relative; }
+body.light .card { background: rgba(255,255,255,0.8); }
+.temaBtn { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.3); color: #fff; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; cursor: pointer; }
+body.light .temaBtn { background: rgba(0,0,0,0.1); color: #333; }
+.wheel-area { position: relative; width: 280px; height: 280px; margin: 20px auto; }
+.wheel-area canvas { width: 100%; height: 100%; }
+.needle { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 30px solid gold; z-index: 5; }
+.btn { padding: 12px 25px; border: none; border-radius: 50px; background: linear-gradient(135deg, #ff512f, #dd2476); color: #fff; font-size: 15px; font-weight: bold; cursor: pointer; margin: 5px; }
+.btn-green { background: linear-gradient(135deg, #00c853, #00bfa5); }
+.btn:disabled { opacity: 0.5; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 15px 0; }
+.stat { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; display: flex; align-items: center; gap: 8px; border-left: 4px solid; }
+body.light .stat { background: rgba(0,0,0,0.05); }
+.dot { width: 14px; height: 14px; border-radius: 50%; }
+.name { font-size: 12px; }
+.num { margin-left: auto; font-size: 20px; font-weight: bold; }
+.info { font-size: 13px; margin: 8px 0; }
+.info b { color: gold; font-size: 16px; }
+.hidden { display: none !important; }
+.result { margin-top: 15px; padding: 15px; background: rgba(76,175,80,0.3); border: 2px solid gold; border-radius: 15px; }
+.result h2 { font-size: 18px; margin-bottom: 5px; }
+.big-num { font-size: 40px; font-weight: bold; color: gold; display: block; margin: 5px 0; }
+.star-picker { display: flex; justify-content: center; gap: 5px; margin: 10px 0; }
+.star-picker span { font-size: 40px; cursor: pointer; color: #555; user-select: none; }
+.star-picker span.on { color: gold; }
+input, textarea { width: 100%; max-width: 260px; padding: 10px 15px; border-radius: 50px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: inherit; font-size: 14px; text-align: center; margin: 6px auto 0; display: block; outline: none; font-family: inherit; }
+body.light input, body.light textarea { border-color: rgba(0,0,0,0.2); background: rgba(0,0,0,0.05); }
+textarea { border-radius: 15px; resize: none; height: 50px; }
+.send-btn { background: linear-gradient(135deg, gold, orange); color: #333; border: none; border-radius: 50px; padding: 12px 35px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 12px; }
+.send-btn:disabled { opacity: 0.5; }
+.msg { margin-top: 10px; padding: 8px; border-radius: 10px; font-size: 13px; }
+.msg-ok { background: rgba(76,175,80,0.5); }
+.msg-err { background: rgba(244,67,54,0.5); }
+.qr-box { margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(128,128,128,0.3); display: none; }
+.qr-box.show { display: block; }
+.qr-box img { width: 160px; height: 160px; background: #fff; padding: 10px; border-radius: 12px; }
+.qr-url { font-size: 10px; opacity: 0.6; margin-top: 5px; word-break: break-all; }
 </style>
 </head>
 <body>
 
-<h1>Test Sayfasi</h1>
-<button onclick="tiklama()">BUTONA BAS</button>
-<button class="yesil" onclick="renkDegistir()">TEMA DEGISTIR</button>
-<div id="sayi">0</div>
-<div id="durum">JS calisiyor</div>
+<div class="card">
+  <button class="temaBtn" id="temaBtn" onclick="temaDegistir()">&#127769;</button>
+  <h1>Renk Carki</h1>
+  <p style="font-size: 12px; opacity: 0.7;">Oyna ve yildiz ver!</p>
+  
+  <div class="wheel-area">
+    <div class="needle"></div>
+    <canvas id="cark" width="300" height="300"></canvas>
+  </div>
+  
+  <button class="btn" id="cevirBtn" onclick="tekCevir()">TEK CEVIR</button>
+  <button class="btn btn-green" id="otoBtn" onclick="otomatikCevir()">OTOMATIK CEVIR</button>
+  
+  <div class="info" id="hizYazi" style="margin-top: 10px;">Hazir</div>
+  
+  <div class="stats">
+    <div class="stat" style="border-color: #2196F3;">
+      <div class="dot" style="background: #2196F3;"></div>
+      <span class="name">Mavi</span>
+      <span class="num" id="s0">0</span>
+    </div>
+    <div class="stat" style="border-color: #4CAF50;">
+      <div class="dot" style="background: #4CAF50;"></div>
+      <span class="name">Yesil</span>
+      <span class="num" id="s1">0</span>
+    </div>
+    <div class="stat" style="border-color: #F44336;">
+      <div class="dot" style="background: #F44336;"></div>
+      <span class="name">Kirmizi</span>
+      <span class="num" id="s2">0</span>
+    </div>
+    <div class="stat" style="border-color: #666;">
+      <div class="dot" style="background: #222;"></div>
+      <span class="name">Siyah</span>
+      <span class="num" id="s3">0</span>
+    </div>
+  </div>
+  
+  <div class="info">Toplam deneme: <b id="deneme">0</b></div>
+  
+  <div class="result hidden" id="sonucPanel">
+    <h2>Tum Puanlar Esitlendi!</h2>
+    <span class="big-num" id="sonucDeneme">0</span>
+    <div style="font-size: 13px; margin-bottom: 8px;">Simdi yildizini sec:</div>
+    <div class="star-picker" id="yildizSecici">
+      <span data-y="1">&#9733;</span>
+      <span data-y="2">&#9733;</span>
+      <span data-y="3">&#9733;</span>
+      <span data-y="4">&#9733;</span>
+      <span data-y="5">&#9733;</span>
+    </div>
+    <div style="font-size: 13px; margin-bottom: 5px;" id="yildizYazi">Yildiz secilmedi</div>
+    <textarea id="yorumInput" placeholder="Yorum (istege bagli)" maxlength="100"></textarea>
+    <input type="text" id="isimInput" placeholder="Adin ne?" maxlength="15">
+    <button class="send-btn" id="gonderBtn" onclick="gonder()" disabled>GONDER</button>
+    <div class="msg hidden" id="bildirim"></div>
+    <a href="tablo.html" style="display: block; margin-top: 12px; color: inherit; font-size: 12px;">Tabloyu Gor &rarr;</a>
+  </div>
+  
+  <div class="qr-box" id="qrBox">
+    <div style="font-size: 12px; opacity: 0.7; margin-bottom: 8px;">Arkadaslarina gonder:</div>
+    <img id="qrImg" alt="QR">
+    <div class="qr-url" id="qrUrl"></div>
+  </div>
+</div>
 
 <script>
-var sayac = 0;
-function tiklama() {
-  sayac = sayac + 1;
-  document.getElementById("sayi").textContent = sayac;
-  document.getElementById("durum").textContent = "Butona " + sayac + " kez bastin";
-}
-function renkDegistir() {
-  if (document.body.style.background === "white") {
-    document.body.style.background = "#1e3c72";
-    document.body.style.color = "white";
-  } else {
-    document.body.style.background = "white";
-    document.body.style.color = "black";
+var DB = "https://renk-95728-default-rtdb.firebaseio.com";
+var RENKLER = ["#2196F3", "#4CAF50", "#F44336", "#222222"];
+var ISIMLER = ["Mavi", "Yesil", "Kirmizi", "Siyah"];
+var puan = [0, 0, 0, 0];
+var deneme = 0, rot = 0, bitti = false, secYildiz = 0;
+
+var c = document.getElementById("cark");
+var cx = c.getContext("2d");
+var M = 150, R = 145;
+
+function ciz() {
+  for (var i = 0; i < 4; i++) {
+    var b1 = i * Math.PI / 2;
+    var b2 = (i + 1) * Math.PI / 2;
+    cx.beginPath();
+    cx.moveTo(M, M);
+    cx.arc(M, M, R, b1, b2);
+    cx.closePath();
+    cx.fillStyle = RENKLER[i];
+    cx.fill();
+    cx.strokeStyle = "rgba(255,255,255,0.7)";
+    cx.lineWidth = 3;
+    cx.stroke();
+    var oa = b1 + Math.PI / 4;
+    var tx = M + Math.cos(oa) * R * 0.6;
+    var ty = M + Math.sin(oa) * R * 0.6;
+    cx.save();
+    cx.translate(tx, ty);
+    cx.fillStyle = "#fff";
+    cx.font = "bold 14px sans-serif";
+    cx.textAlign = "center";
+    cx.textBaseline = "middle";
+    cx.fillText(ISIMLER[i], 0, 0);
+    cx.restore();
   }
+  cx.beginPath();
+  cx.arc(M, M, R, 0, Math.PI * 2);
+  cx.strokeStyle = "gold";
+  cx.lineWidth = 6;
+  cx.stroke();
 }
+
+function dondur(a) {
+  cx.clearRect(0, 0, 300, 300);
+  cx.save();
+  cx.translate(M, M);
+  cx.rotate(a * Math.PI / 180);
+  cx.translate(-M, -M);
+  ciz();
+  cx.restore();
+}
+
+function dilim(d) {
+  var ha = d * 90 + 45;
+  var ir = ((270 - ha) % 360 + 360) % 360;
+  var mr = ((rot % 360) + 360) % 360;
+  var f = ((ir - mr) % 360 + 360) % 360;
+  rot = rot + 360 + f;
+  dondur(rot);
+}
+
+function guncelle() {
+  for (var i = 0; i < 4; i++) document.getElementById("s" + i).textContent = puan[i];
+  document.getElementById("deneme").textContent = deneme;
+}
+
+function hepsiEsit() {
+  return puan[0] === puan[1] && puan[1] === puan[2] && puan[2] === puan[3];
+}
+
+function tekCevir() {
+  if (bitti) return;
+  var h = Math.floor(Math.random() * 4);
+  puan[h] = puan[h] + 1;
+  deneme = deneme + 1;
+  guncelle();
+  dilim(h);
+  if (hepsiEsit()) bitir();
+}
+
+function otomatikCevir() {
+  if (bitti) return;
+  document.getElementById("cevirBtn").disabled = true;
+  document.getElementById("otoBtn").disabled = true;
+  document.getElementById("hizYazi").textContent = "Hesaplaniyor...";
+  
+  var guv = 0;
+  while (true) {
+    guv = guv + 1;
+    var sec;
+    if (Math.random() < 0.80) {
+      sec = Math.floor(Math.random() * 4);
+    } else {
+      var ek = Math.min(puan[0], puan[1], puan[2], puan[3]);
+      var aday = [];
+      for (var i = 0; i < 4; i++) if (puan[i] === ek) aday.push(i);
+      sec = aday[Math.floor(Math.random() * aday.length)];
+    }
+    puan[sec] = puan[sec] + 1;
+    deneme = deneme + 1;
+    if (hepsiEsit()) break;
+    if (guv > 5000000) break;
+  }
+  
+  guncelle();
+  var son = Math.floor(Math.random() * 4);
+  dilim(son);
+  bitir();
+}
+
+function bitir() {
+  bitti = true;
+  document.getElementById("hizYazi").textContent = "Bitti! Yildizini sec";
+  document.getElementById("sonucDeneme").textContent = deneme + " deneme";
+  document.getElementById("sonucPanel").classList.remove("hidden");
+  document.getElementById("sonucPanel").scrollIntoView({ behavior: "smooth" });
+}
+
+var yildizYazi = {1: "Uhuhuhu...", 2: "Yanii...", 3: "Olurr!", 4: "Huhuu!", 5: "Tesekkurler!"};
+var stars = document.querySelectorAll("#yildizSecici span");
+for (var i = 0; i < stars.length; i++) {
+  stars[i].onclick = function() {
+    secYildiz = parseInt(this.getAttribute("data-y"));
+    var s = document.querySelectorAll("#yildizSecici span");
+    for (var j = 0; j < s.length; j++) {
+      if (j < secYildiz) s[j].classList.add("on");
+      else s[j].classList.remove("on");
+    }
+    document.getElementById("yildizYazi").textContent = secYildiz + " yildiz - " + yildizYazi[secYildiz];
+    kontrol();
+  };
+}
+
+document.getElementById("isimInput").oninput = kontrol;
+
+function kontrol() {
+  var a = document.getElementById("isimInput").value.trim();
+  document.getElementById("gonderBtn").disabled = !(secYildiz > 0 && a.length > 0);
+}
+
+function gonder() {
+  var a = document.getElementById("isimInput").value.trim();
+  if (!a || !secYildiz) return;
+  var b = document.getElementById("gonderBtn");
+  b.disabled = true;
+  b.textContent = "Gonderiliyor...";
+  var m = document.getElementById("bildirim");
+  m.classList.add("hidden");
+  
+  fetch(DB + "/kayitlar.json", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      isim: a,
+      yildiz: secYildiz,
+      deneme: deneme,
+      yorum: document.getElementById("yorumInput").value.trim(),
+      tarih: new Date().toISOString()
+    })
+  }).then(function(r) {
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    m.className = "msg msg-ok";
+    m.textContent = "Gonderildi! Tabloya gidiliyor...";
+    m.classList.remove("hidden");
+    setTimeout(function() { window.location.href = "tablo.html"; }, 1200);
+  }).catch(function(e) {
+    m.className = "msg msg-err";
+    m.textContent = "Hata: " + e.message;
+    m.classList.remove("hidden");
+    b.disabled = false;
+    b.textContent = "GONDER";
+  });
+}
+
+function temaDegistir() {
+  document.body.classList.toggle("light");
+  var l = document.body.classList.contains("light");
+  if (l) {
+    document.getElementById("temaBtn").innerHTML = "&#9728;&#65039;";
+  } else {
+    document.getElementById("temaBtn").innerHTML = "&#127769;";
+  }
+  localStorage.setItem("tema", l ? "light" : "dark");
+}
+
+if (localStorage.getItem("tema") === "light") {
+  document.body.classList.add("light");
+  document.getElementById("temaBtn").innerHTML = "&#9728;&#65039;";
+}
+
+setTimeout(function() {
+  var u = window.location.href;
+  document.getElementById("qrUrl").textContent = u;
+  document.getElementById("qrImg").src = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(u);
+  document.getElementById("qrBox").classList.add("show");
+}, 300);
+
+dondur(0);
+
+setTimeout(function() {
+  try {
+    var devId = localStorage.getItem("devid");
+    if (!devId) {
+      devId = "dev_" + Math.random().toString(36).substring(2) + Date.now();
+      localStorage.setItem("devid", devId);
+    }
+    fetch("https://api.ipify.org?format=json")
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        var now = new Date().toISOString();
+        var ilk = localStorage.getItem("ilk") || now;
+        localStorage.setItem("ilk", ilk);
+        var ua = navigator.userAgent;
+        var marka = "Bilinmiyor";
+        if (/iPhone/i.test(ua)) marka = "iPhone";
+        else if (/Samsung|SM-/i.test(ua)) marka = "Samsung";
+        else if (/Huawei/i.test(ua)) marka = "Huawei";
+        else if (/Xiaomi|Redmi/i.test(ua)) marka = "Xiaomi";
+        else if (/Oppo/i.test(ua)) marka = "Oppo";
+        else if (/Windows/i.test(ua)) marka = "Windows";
+        else if (/Macintosh/i.test(ua)) marka = "Mac";
+        else if (/Linux/i.test(ua)) marka = "Linux";
+        else if (/Android/i.test(ua)) marka = "Android";
+        var os = "Bilinmiyor";
+        var om = ua.match(/(Android [\d.]+|iPhone OS [\d_]+|Mac OS X [\d_.]+|Windows NT [\d.]+)/);
+        if (om) os = om[1].replace(/_/g, ".");
+        var br = "Bilinmiyor";
+        if (/Edg\//i.test(ua)) br = "Edge";
+        else if (/Chrome/i.test(ua)) br = "Chrome";
+        else if (/Firefox/i.test(ua)) br = "Firefox";
+        else if (/Safari/i.test(ua)) br = "Safari";
+        var bilgi = {
+          marka: marka, os: os, tarayici: br,
+          ekran: screen.width + "x" + screen.height,
+          dil: navigator.language,
+          saatDilimi: "bilinmiyor",
+          mobil: /Mobi|Android|iPhone/i.test(ua),
+          cekirdek: navigator.hardwareConcurrency || "?",
+          dokunmatik: "ontouchstart" in window
+        };
+        fetch(DB + "/presence/" + devId + ".json", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            deviceId: devId, ip: d.ip, lastSeen: now, firstSeen: ilk, bilgi: bilgi
+          })
+        });
+      });
+  } catch(e) {}
+}, 1000);
 </script>
 
 </body>
