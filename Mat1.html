@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Toplama Yarisi</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
+body{background:linear-gradient(135deg,#1e3c72,#2a5298,#6a3093);min-height:100vh;padding:20px;color:#fff;display:flex;justify-content:center;align-items:center}
+.kart{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:25px 20px;max-width:480px;width:100%;text-align:center;position:relative}
+.geriBtn{position:absolute;top:14px;left:14px;background:rgba(0,0,0,.3);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer;text-decoration:none;display:flex;align-items:center;justify-content:center}
+h1{font-size:20px;margin-bottom:4px}
+.alt{font-size:12px;opacity:.7;margin-bottom:12px}
+.rozetler{display:flex;justify-content:center;gap:5px;margin:8px 0;flex-wrap:wrap}
+.rozet{width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font-size:14px;opacity:.25;border:2px solid transparent}
+.rozet.kazanildi{opacity:1;background:linear-gradient(135deg,gold,orange);box-shadow:0 0 10px rgba(255,215,0,.6);border-color:#fff}
+.skorBar{display:flex;justify-content:space-around;font-size:13px;margin:10px 0;padding:8px;background:rgba(0,0,0,.2);border-radius:10px}
+.skorBar b{color:gold;font-size:16px}
+.soru{font-size:48px;font-weight:bold;margin:25px 0;color:gold;text-shadow:0 0 15px rgba(255,215,0,.5)}
+.secenekler{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
+.secenek{background:linear-gradient(135deg,#ff512f,#dd2476);border:none;border-radius:14px;padding:20px 15px;font-size:24px;font-weight:bold;color:#fff;cursor:pointer;transition:transform .15s}
+.secenek:hover{transform:scale(1.05)}
+.secenek.dogru{background:linear-gradient(135deg,#00c853,#00bfa5);animation:zipla .4s}
+.secenek.yanlis{background:linear-gradient(135deg,#f44336,#b71c1c);animation:titret .4s}
+@keyframes zipla{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes titret{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.baslatBtn{background:linear-gradient(135deg,#00c853,#00bfa5);color:#fff;border:none;border-radius:50px;padding:15px 40px;font-size:17px;font-weight:bold;cursor:pointer;margin-top:15px}
+.sonuc{margin-top:15px;padding:20px;background:rgba(76,175,80,.3);border:2px solid gold;border-radius:15px;display:none}
+.sonuc.show{display:block}
+.sonuc h2{font-size:20px;margin-bottom:8px}
+.buyukSkor{font-size:50px;font-weight:bold;color:gold;display:block;margin:8px 0}
+.rozetModal{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:10000;display:none;justify-content:center;align-items:center;padding:20px}
+.rozetModal.show{display:flex}
+.rozetBox{background:linear-gradient(160deg,#fff,#f0f4ff);color:#333;border-radius:20px;padding:30px 25px;max-width:340px;width:100%;text-align:center}
+.rozetBox .buyukEmoji{font-size:80px;display:block;margin-bottom:12px}
+.rozetBox h2{color:#ff8c00;font-size:20px;margin-bottom:8px}
+.rozetBox p{font-size:14px;color:#666;margin-bottom:16px}
+.rozetBox button{background:linear-gradient(135deg,gold,orange);color:#333;border:none;border-radius:50px;padding:12px 35px;font-size:15px;font-weight:bold;cursor:pointer}
+input{width:100%;max-width:220px;padding:12px;border-radius:50px;border:2px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-size:14px;text-align:center;margin:8px auto 0;display:block;outline:none}
+input::placeholder{color:rgba(255,255,255,.5)}
+.gonderBtn{background:linear-gradient(135deg,gold,orange);color:#333;border:none;border-radius:50px;padding:12px 30px;font-size:14px;font-weight:bold;cursor:pointer;margin-top:10px}
+.gonderBtn:disabled{opacity:.5}
+</style>
+</head>
+<body>
+<div class="rozetModal" id="rozetModal"><div class="rozetBox"><span class="buyukEmoji" id="rozetEmoji">&#127942;</span><h2>YENI ROZET!</h2><p id="rozetIsim"></p><button onclick="matRozetKapat()">HARIKA!</button></div></div>
+<div class="kart">
+<a href="oyunlar.html" class="geriBtn">&#8592;</a>
+<h1>&#10133; Toplama Yarisi</h1>
+<p class="alt">Dogru cevabi sec!</p>
+<div class="rozetler" id="rozetler"></div>
+<div class="skorBar"><div>Soru: <b id="soruNo">0</b>/10</div><div>Dogru: <b id="dogruSayi">0</b></div></div>
+<div class="soru" id="soru">Hazir?</div>
+<div class="secenekler" id="secenekler"></div>
+<button class="baslatBtn" id="baslatBtn" onclick="basla()">BASLA</button>
+<div class="sonuc" id="sonuc">
+<h2>&#127881; Oyun Bitti!</h2>
+<span class="buyukSkor" id="finalSkor">0</span>
+<div style="font-size:13px;margin-bottom:12px;">Skor: <b id="finalDogru">0</b> / 10 dogru</div>
+<input type="text" id="isimInput" placeholder="Adin ne?" maxlength="15">
+<button class="gonderBtn" id="gonderBtn" onclick="skorGonder()" disabled>SKORU GONDER</button>
+<a href="tablo.html" style="display:block;margin-top:12px;color:#fff;font-size:12px;">Tabloyu Gor &rarr;</a>
+</div>
+</div>
+<script src="MatOrtak.js"></script>
+<script>
+var oyunId="mat1";
+var soruNo=0,dogru=0,ustUste=0,enIyi=0,aktif=false,cevap=0,ilkZaman=0,hizli=false;
+
+function basla(){
+soruNo=0;dogru=0;ustUste=0;enIyi=0;hizli=false;aktif=true;
+document.getElementById("baslatBtn").style.display="none";
+document.getElementById("sonuc").classList.remove("show");
+yeniSoru();
+}
+
+function yeniSoru(){
+if(soruNo>=10){bitir();return;}
+soruNo++;
+document.getElementById("soruNo").textContent=soruNo;
+var a=Math.floor(Math.random()*50)+10;
+var b=Math.floor(Math.random()*50)+10;
+cevap=a+b;
+document.getElementById("soru").textContent=a+" + "+b+" = ?";
+var yanlislar=[];
+while(yanlislar.length<3){
+var y=cevap+Math.floor(Math.random()*21)-10;
+if(y!==cevap&&yanlislar.indexOf(y)===-1&&y>0)yanlislar.push(y);
+}
+var tum=[cevap].concat(yanlislar);
+tum.sort(function(){return Math.random()-0.5;});
+var kap=document.getElementById("secenekler");
+kap.innerHTML="";
+for(var i=0;i<4;i++){
+var b=document.createElement("button");
+b.className="secenek";
+b.textContent=tum[i];
+b.onclick=(function(deger,btn){return function(){sec(deger,btn);};})(tum[i],b);
+kap.appendChild(b);
+}
+ilkZaman=Date.now();
+}
+
+function sec(deger,btn){
+if(!aktif)return;
+aktif=false;
+if(deger===cevap){
+btn.classList.add("dogru");
+dogru++;ustUste++;
+if(ustUste>enIyi)enIyi=ustUste;
+if(Date.now()-ilkZaman<5000)hizli=true;
+document.getElementById("dogruSayi").textContent=dogru;
+matSes("dogru");
+setTimeout(function(){aktif=true;yeniSoru();},700);
+}else{
+btn.classList.add("yanlis");
+ustUste=0;
+matSes("yanlis");
+setTimeout(function(){
+var btnler=document.querySelectorAll(".secenek");
+for(var i=0;i<btnler.length;i++){if(parseInt(btnler[i].textContent)===cevap)btnler[i].classList.add("dogru");}
+},300);
+setTimeout(function(){aktif=true;yeniSoru();},1200);
+}
+}
+
+function bitir(){
+aktif=false;
+var k="mat_"+oyunId+"_";
+var os=parseInt(localStorage.getItem(k+"oyun")||"0")+1;
+localStorage.setItem(k+"oyun",os);
+var ds=parseInt(localStorage.getItem(k+"dogru")||"0")+dogru;
+localStorage.setItem(k+"dogru",ds);
+var eu=parseInt(localStorage.getItem(k+"eniyi")||"0");
+if(enIyi>eu)localStorage.setItem(k+"eniyi",enIyi);
+if(hizli)localStorage.setItem(k+"hizli","1");
+document.getElementById("finalSkor").textContent=dogru*10;
+document.getElementById("finalDogru").textContent=dogru;
+document.getElementById("sonuc").classList.add("show");
+matSes("bitir");
+matRozetKontrol(oyunId);
+}
+
+document.getElementById("isimInput").oninput=function(){
+document.getElementById("gonderBtn").disabled=this.value.trim().length===0;
+};
+
+function skorGonder(){
+var a=document.getElementById("isimInput").value.trim();
+if(!a)return;
+var b=document.getElementById("gonderBtn");
+b.disabled=true;b.textContent="Gonderiliyor...";
+matOyunKaydet(oyunId,a,dogru*10,dogru);
+setTimeout(function(){window.location.href="tablo.html";},1000);
+}
+
+matRozetCiz(oyunId);
+</script>
+</body>
+</html>
