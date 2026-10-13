@@ -1,0 +1,13 @@
+{
+"name":"Renk Carki",
+"short_name":"Carki",
+"description":"Renk Carki oyunu",
+"start_url":"index.html",
+"display":"standalone",
+"background_color":"#1e3c72",
+"theme_color":"#1e3c72",
+"orientation":"portrait",
+"icons":[
+{"src":"ikon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}
+]
+}
