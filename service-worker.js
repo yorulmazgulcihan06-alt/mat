@@ -1,5 +1,5 @@
-var CACHE_NAME="renk-carki-v1";
-var DOSYALAR=["./","./index.html","./tablo.html","./Tablo.js","./manifest.json","./ikon.svg"];
+var CACHE_NAME="renk-carki-v2";
+var DOSYALAR=["./","./index.html","./tablo.html","./Tablo.js","./Rozet.js","./manifest.json","./logo.png"];
 
 self.addEventListener("install",function(e){
 e.waitUntil(caches.open(CACHE_NAME).then(function(c){return c.addAll(DOSYALAR);}).catch(function(){}));
